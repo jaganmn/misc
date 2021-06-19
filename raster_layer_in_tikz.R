@@ -4,30 +4,36 @@ library("png")
 set.seed(101)
 dd <- data.frame(x = rnorm(1e5), y = rnorm(1e5))
 
-tikz("foo.tex", width = 5, height = 5, standAlone = TRUE)
-plot(y ~ x, data = dd,
-     xlim = c(-5, 5), ylim = c(-5, 5),
-     col = "#00000033")
+w <- h <- 5
+xlim <- ylim <- c(-5, 5)
+col <- "#00000033"
+
+## Brute force attempt to plot everything on a `tikz` device
+tikz("foo.tex", width = w, height = h, standAlone = TRUE)
+plot(y ~ x, data = dd, xlim = xlim, ylim = ylim, col = col)
 dev.off() # 12M
 # system("pdflatex foo.tex") # TeX capacity exceeded, sorry
 
-png("bar.png", bg = "transparent", width = 5, height = 5, units = "in", res = 300)
-plot(y ~ x, data = dd,
-     ann = FALSE, axes = FALSE,
-     xlim = c(-5, 5), ylim = c(-5, 5),
-     col = "#00000033")
+## Create raster layer containing just points
+png("bar.png", width = w, height = h, units = "in",
+    res = 300, bg = "transparent")
+plot(y ~ x, data = dd, xlim = xlim, ylim = ylim, col = col,
+     ann = FALSE, axes = FALSE)
 dev.off()
+
+## Read raster layer into R as raster array
 bar <- readPNG("bar.png", native = TRUE)
 
-tikz("bar.tex", width = 5, height = 5, standAlone = TRUE)
-plot(y ~ x, data = dd, type = "n",
-     xlim = c(-5, 5), ylim = c(-5, 5))
+## Embed raster layer in `tikz` plot containing just axes
+tikz("bar.tex", width = w, height = h, standAlone = TRUE)
+plot(y ~ x, data = dd, xlim = xlim, ylim = ylim, type = "n")
 usr <- par("usr")
 mxy <- par("mai") * (par("cxy") / par("cin"))[2:1]
 rasterImage(bar, interpolate = FALSE,
-            xleft = usr[1L] - mxy[2L],
-            xright = usr[2L] + mxy[4L],
-            ybottom = usr[3L] - mxy[1L],
-            ytop = usr[4L] + mxy[3L])
+            ## Corners of device in user coordinates
+            xleft = usr[1] - mxy[2],
+            xright = usr[2] + mxy[4],
+            ybottom = usr[3] - mxy[1],
+            ytop = usr[4] + mxy[3])
 dev.off() # 3.7K
 system("pdflatex bar.tex") # OK
