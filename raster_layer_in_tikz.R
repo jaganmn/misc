@@ -11,7 +11,8 @@ col <- "#00000033"
 ## Brute force attempt to plot everything on a `tikz` device
 tikz("foo.tex", width = w, height = h, standAlone = TRUE)
 plot(y ~ x, data = dd, xlim = xlim, ylim = ylim, col = col)
-dev.off() # 12M
+dev.off()
+file.size("foo.tex") # 12.3 MB
 # system("pdflatex foo.tex") # TeX capacity exceeded, sorry
 
 ## Create raster layer containing just points
@@ -20,6 +21,7 @@ png("bar.png", width = w, height = h, units = "in",
 plot(y ~ x, data = dd, xlim = xlim, ylim = ylim, col = col,
      ann = FALSE, axes = FALSE)
 dev.off()
+file.size("bar.png") # 399.4 KB
 
 ## Read raster layer into R as raster array
 bar <- readPNG("bar.png", native = TRUE)
@@ -35,5 +37,7 @@ rasterImage(bar, interpolate = FALSE,
             xright = usr[2] + mxy[4],
             ybottom = usr[3] - mxy[1],
             ytop = usr[4] + mxy[3])
-dev.off() # 3.7K
+dev.off()
+file.size("bar.tex") # 3.7 KB
 system("pdflatex bar.tex") # OK
+file.size("bar.pdf") # 248.1 KB
