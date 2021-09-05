@@ -1,8 +1,4 @@
----
-title: TMB implementations of LKJ, Wishart, and inverse Wishart distributions
-author: Mikael Jagan
-date: 2021-09-05
----
+## TMB implementations of LKJ, Wishart, and inverse Wishart distributions
 
 `distributions.h` is a header file implementing four functions:
 

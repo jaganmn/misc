@@ -4,6 +4,7 @@
 *.tex
 *.pdf
 *.html
+*.Rout
 *.png
 *.o
 *.so
