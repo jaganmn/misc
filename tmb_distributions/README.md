@@ -15,7 +15,7 @@ at `x > 0.5 * (p - 1)`.
 
 `dlkj` computes the
 [Lewandowski-Kurowicka-Joe](https://mc-stan.org/docs/2_27/functions-reference/lkj-correlation.html)
-(LKJ) density of the `n`-by-`n`, unit diagonal, symmetric positive
+(LKJ) density of the `n`-by-`n` unit diagonal, symmetric positive
 definite matrix `X` parametrized by `x`. `x` is expected to have
 length `n*(n-1)/2` and map to `X` as described
 [here](https://kaskr.github.io/adcomp/classUNSTRUCTURED__CORR__t.html). 
