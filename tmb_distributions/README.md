@@ -30,9 +30,10 @@ densities of the `n`-by-`n` symmetric positive definite matrix `X`
 parametrized by `x`. `x` is expected to have length `n*(n+1)/2`, 
 with `head(x, n)` containing the log standard deviations `log(sqrt(diag(X)))` 
 and `tail(x, n*(n-1)/2)` mapping to `cov2cor(X)` (see above). 
-`df` is the degrees of freedom and must exceed `n - 1`. `scale` 
-is a vector of length `n*(n+1)/2` defining the `n`-by-`n` symmetric 
-positive definite scale matrix `S`, in the same way that `x` defines `X`.
+`df` is the degrees of freedom, which must be greater than `n - 1`. 
+`scale`  is a vector of length `n*(n+1)/2` defining the `n`-by-`n` 
+symmetric positive definite scale matrix `S`, in the same way that 
+`x` defines `X`.
 
 Computational details can be found in `notes.tex`.
 
