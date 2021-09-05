@@ -1,5 +1,9 @@
 *.aux
 *.log
-*.pdf
-*.png
+*.out
 *.tex
+*.pdf
+*.html
+*.png
+*.o
+*.so
