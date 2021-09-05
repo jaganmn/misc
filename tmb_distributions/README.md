@@ -5,10 +5,8 @@
 ```cpp
 mvlgamma(Type x, int p)
 dlkj(vector<Type> x, Type eta, int give_log)
-dwishart(vector<Type> x, Type df, vector<Type> scale, int
-give_log = 1)
-dwishart(vector<Type> x, Type df, vector<Type> scale, int
-give_log = 1)
+dwishart(vector<Type> x, Type df, vector<Type> scale, int give_log = 1)
+dwishart(vector<Type> x, Type df, vector<Type> scale, int give_log = 1)
 ```
 
 `mvlgamma` evaluates the log 
