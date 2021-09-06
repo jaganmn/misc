@@ -2,11 +2,11 @@
 
 `distributions.h` is a header file implementing four functions:
 
-```
-mvlgamma(Type x, int p = 1)
-dlkj(vector<Type> x, Type eta, int give_log = 0)
-dwishart(vector<Type> x, Type df, vector<Type> scale, int give_log = 0)
-dinvwishart(vector<Type> x, Type df, vector<Type> scale, int give_log = 0)
+```cpp
+Type mvlgamma(Type x, int p = 1)
+Type dlkj(const vector<Type> &x, Type eta, int give_log = 0)
+Type dwishart(const vector<Type> &x, Type df, const vector<Type> &scale, int give_log = 0)
+Type dinvwishart(const vector<Type> &x, Type df, const vector<Type> &scale, int give_log = 0)
 ```
 
 `mvlgamma` evaluates the log 
