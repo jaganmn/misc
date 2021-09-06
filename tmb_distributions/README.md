@@ -35,12 +35,13 @@ if `X` is an `n`-by-`n` matrix, then `x` must have length `n*(n+1)/2`,
 and `tail(x, n*(n-1)/2)` must specify `cov2cor(X)` 
 (see again [here](https://kaskr.github.io/adcomp/classUNSTRUCTURED__CORR__t.html)).
 `df` is the degrees of freedom, subject to the constraint `df > n - 1`. 
-`scale` specifies the scale matrix `S` in the same way that `x` specifies `X`.
+`scale` specifies the `n`-by-`n` scale matrix `S` in the same way that 
+`x` specifies `X`.
 
 Computational details can be found in `distributions.tex`.
 
-Simple tests for agreement between the C++ functions and independently 
-implemented R functions can be found in `distributions.R`, which compiles 
-the function template `distributions.cpp`. The compiled function passes 
-`DATA_*` objects from R as arguments to the C++ functions and `REPORT`s 
-the results back to R for validation.
+Tests for agreement between the C++ functions and independently implemented 
+R functions can be found in `distributions.R`. The script compiles function 
+template `distributions.cpp`. The compiled function passes `DATA_*` objects 
+from R as arguments to the C++ functions and `REPORT`s results back to R for 
+validation.

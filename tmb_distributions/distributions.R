@@ -72,9 +72,9 @@ res3 <- get_test_res(test_enum = "dlkj", x = x, eta = eta, give_log = 1L)
 stopifnot(all.equal(res3, dlkj(x, eta, TRUE)))
 
 dwishart <- function(x, df, scale, give_log = FALSE) {
+  n <- 0.5 * (-1 + sqrt(1 + 8 * length(x)))
   X <- make_Sigma(x)
   S <- make_Sigma(scale)
-  n <- 0.5 * (-1 + sqrt(1 + 8 * length(x)))
   log_res <- -0.5 * (df * log(det(S)) + (-df + n + 1) * log(det(X)) + n * df * log(2) + 2 * mvlgamma(df / 2, n) + sum(diag(solve(S, X))))
   if (give_log) log_res else exp(log_res)
 }
