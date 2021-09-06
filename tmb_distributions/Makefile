@@ -1,4 +1,4 @@
-all: README.html distributions.Rout notes.pdf
+all: README.html distributions.Rout distributions.pdf
 
 %.html: %.md
 	pandoc $< -s -o $@ 

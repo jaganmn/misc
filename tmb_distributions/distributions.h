@@ -2,7 +2,7 @@ namespace distributions
 {
 
 template<class Type>
-Type mvlgamma(Type x, int p)
+Type mvlgamma(Type x, int p = 1)
 {
     Type res = lgamma(x);
     if (p == 1)
