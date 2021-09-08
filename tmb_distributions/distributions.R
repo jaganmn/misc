@@ -1,5 +1,5 @@
 library("TMB")
-packageVersion("TMB") # 1.7.20
+packageVersion("TMB") # 1.7.21
 R.version.string # 4.1.0
 
 dll <- "distributions"
@@ -10,30 +10,24 @@ dyn.load(dynlib(dll))
 
 #### Utilities ----
 
-## Retrieve integer value of enumerator of type 'test'
-get_test_flag <- local({
+## Run the indicated test with the supplied data and return the result
+get_test_res <- local({
   tt <- paste(readLines(cpp), collapse = "\n")
   tt <- sub("^.*?enum[ \t\n]+test[ \t\n]*\\{(.*?)\\};.*$", "\\1", tt)
   tt <- gsub("[ \t\n]", "", tt)
   test_enums <- strsplit(tt, ",")[[1L]]
-  function(test_enum) {
-    match(test_enum, test_enums, 0L) - 1L
+  function(test_enum, ...) {
+    data <- list(test_flag = match(test_enum, test_enums, 0L) - 1L, ...)
+    obj <- MakeADFun(
+      data = data,
+      parameters = list(),
+      type = "Fun",
+      checkParameterOrder = FALSE,
+      DLL = dll
+    )
+    obj$report()$res
   }
 })
-
-## Run the indicated test with the supplied data and return the result
-get_test_res <- function(test_enum, ...) {
-  data <- list(test_flag = get_test_flag(test_enum))
-  data <- c(data, list(...))
-  obj <- MakeADFun(
-    data = data,
-    parameters = list(),
-    type = "Fun",
-    checkParameterOrder = FALSE,
-    DLL = dll
-  )
-  obj$report()$res
-}
 
 ## Construct a covariance matrix 'Sigma' from 'x = c(log_sd, theta)'
 make_Sigma <- function(x) {
