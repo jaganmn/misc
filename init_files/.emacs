@@ -1,0 +1,11 @@
+(setq-default major-mode 'text-mode)
+(setq inhibit-startup-screen t)
+(setq column-number-mode t)
+(setq show-paren-mode t)
+(setq require-final-newline t)
+(setq save-abbrevs nil)
+(setq show-paren-style 'parenthesis) ; otherwise 'expression
+(add-to-list 'default-frame-alist '(width  . 80))
+(add-to-list 'default-frame-alist '(height . 40))
+(add-to-list 'default-frame-alist '(font   . "Menlo-18"))
+(load-theme 'misterioso t)

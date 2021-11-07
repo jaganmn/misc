@@ -1,0 +1,17 @@
+alias sudo="sudo "
+alias R="R --quiet"
+alias ls="gls --group-directories-first --color=auto"
+
+alias discord="/Applications/Discord.app/Contents/MacOS/Discord"
+alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"
+alias firefox="/Applications/Firefox.app/Contents/MacOS/firefox"
+alias rstudio="/Applications/RStudio.app/Contents/MacOS/RStudio"
+alias safari="/Applications/Safari.app/Contents/MacOS/Safari"
+alias skype="/Applications/Skype.app/Contents/MacOS/Skype"
+alias spotify="/Applications/Spotify.app/Contents/MacOS/Spotify"
+alias systempreferences="/System/Applications/System\ Preferences.app/Contents/MacOS/System\ Preferences"
+alias teams="/Applications/Microsoft\ Teams.app/Contents/MacOS/Teams"
+alias thunderbird="/Applications/Thunderbird.app/Contents/MacOS/thunderbird"
+alias zoom="/Applications/zoom.us.app/Contents/MacOS/zoom.us"
+alias zulip="/Applications/Zulip.app/Contents/MacOS/Zulip"
+
