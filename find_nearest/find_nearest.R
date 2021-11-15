@@ -14,7 +14,7 @@ setAs(from = "dist", to = "dspMatrix", function(from) {
 })
 
 applySymmetric <- function (X, FUN, ..., simplify = TRUE, check = FALSE) {
-  if (check) {
+  if (isTRUE(check)) {
     stopifnot(isSymmetric(X))
   }
   FUN <- match.fun(FUN)
