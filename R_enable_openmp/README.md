@@ -1,11 +1,11 @@
-# Enabling OpenMP support on Apple silicon for R package installation
+# Installing R packaged with OpenMP support on Apple silicon
 
 CRAN is now releasing prebuilt native R binaries for Apple silicon,
 [here](https://cran.r-project.org/bin/macosx/), eliminating the need
-to build R from sources. These instructions are intended for Apple
-silicon users with a native build of R, looking to enable OpenMP
-support when installing from sources R packages that rely on compiled
-C or C++ code. They are based on a careful reading of
+to build R from sources to obtain a native build. These instructions 
+are intended for Apple silicon users with a native build of R, looking 
+to enable OpenMP support when installing from sources R packages that 
+depend on compiled C or C++ code. They are based on a careful reading of
 [R-admin](https://cran.r-project.org/doc/manuals/r-release/R-admin.html),
 but may become out of date at any time and come with no warranty!
 
@@ -52,9 +52,9 @@ but may become out of date at any time and come with no warranty!
    ```
    
 4. Start an R session and try installing from sources a package that 
-   optionally uses OpenMP, where supported. Hopefully, that package
-   comes with a way to test whether support is actually enabled. By
-   way of example:
+   makes use of OpenMP where supported. Hopefully, that packages comes 
+   with a way to test whether support is actually enabled. By way of 
+   example:
    
    ```r
    install.packages("TMB", type = "source")
