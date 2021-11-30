@@ -1,8 +1,8 @@
-# Installing R packaged with OpenMP support on Apple silicon
+# Installing R packages with OpenMP support on Apple silicon
 
 CRAN is now releasing prebuilt native R binaries for Apple silicon,
 [here](https://cran.r-project.org/bin/macosx/), eliminating the need
-to build R from sources to obtain a native build. These instructions 
+to build R from sources to run R without Rosetta 2. These instructions 
 are intended for Apple silicon users with a native build of R, looking 
 to enable OpenMP support when installing from sources R packages that 
 depend on compiled C or C++ code. They are based on a careful reading of
@@ -51,8 +51,8 @@ but may become out of date at any time and come with no warranty!
    LDFLAGS=-L$(LLVM_DIR)/lib -L$(LIBS_DIR)/lib
    ```
    
-4. Start an R session and try installing from sources a package that 
-   makes use of OpenMP where supported. Hopefully, that packages comes 
+4. Start an R session and try installing from sources an R package that 
+   makes use of OpenMP where supported. Hopefully, that package comes
    with a way to test whether support is actually enabled. By way of 
    example:
    
