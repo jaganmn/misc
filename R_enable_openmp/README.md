@@ -2,7 +2,7 @@
 
 CRAN is now releasing prebuilt native R binaries for Apple silicon,
 [here](https://cran.r-project.org/bin/macosx/), eliminating the need
-to build R from sources. These are instructions are intended for Apple
+to build R from sources. These instructions are intended for Apple
 silicon users with a native build of R, looking to enable OpenMP
 support when installing from sources R packages that rely on compiled
 C or C++ code. They are based on a careful reading of
