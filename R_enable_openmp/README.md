@@ -1,16 +1,15 @@
 # Installing R packages with OpenMP support on Apple silicon
 
-CRAN is now releasing prebuilt native R binaries for Apple silicon, 
-[here](https://cran.r-project.org/bin/macosx/), eliminating the need 
-to build R from sources to run R without Rosetta 2. These instructions
-are intended for Apple silicon users with a native build of R, looking
-to enable OpenMP support when installing from sources R packages that
-depend on compiled C or C++ code. They are based on a careful reading
-of
+These instructions are intended for Apple silicon users wanting to
+compile R packages from their sources with OpenMP support. They are
+based on a careful reading of
 [R-admin](https://cran.r-project.org/doc/manuals/r-release/R-admin.html),
 but may become out of date at any time and come with no warranty!
 
-1.  Install Apple's Command Line Tools. Running
+1.  Download and install a native R binary from CRAN,
+	[here](https://cran.r-project.org/bin/macosx/).
+	
+2.  Install Apple's Command Line Tools. Running
     
     ```
     xcode-select --install
@@ -20,9 +19,9 @@ but may become out of date at any time and come with no warranty!
     no version is currently installed.
 
 2.  Install the [LLVM](https://llvm.org/) `clang` toolchain, which
-    supports OpenMP, unlike Apple `clang`. At the time of writing,
-    LLVM only supplies binaries for the `x86_64` architecture (see
-    [here](https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.0)).
+    unlike Apple `clang`, supports OpenMP. At the time of writing,
+    LLVM only supplies binaries for the `x86_64` architecture 
+	(see [here](https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.0)).
     Fortunately, Homebrew has the `arm64` build:
 
     ```

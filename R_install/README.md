@@ -5,8 +5,8 @@ Rough notes based on a drunken reading of `R-admin`...
 
 ## Dependencies
 
-Take the following steps to ensure that all dependencies are satisfied
-before proceeding with installation.
+Take the following steps to make sure that all dependencies are
+satisfied before proceeding with installation.
 
 1.  Download all prerequisite binaries from
     [R for macOS Developers](https://mac.r-project.org/libs-arm64/)
@@ -29,13 +29,14 @@ before proceeding with installation.
 
     See `R-admin` C.3.10.1 _Native builds_.
     
-2.  Install the [LLVM](https://llvm.org/) `clang` toolchain,
-    which supports OpenMP parallelism. At the time of writing,
-    LLVM supplies binaries for the `x86_64` architecture only
+2.  Install the [LLVM](https://llvm.org/) `clang` toolchain, which,
+	unlike Apple `clang`, supports OpenMP. At the time of writing,
+    LLVM only supplies binaries for the `x86_64` architecture
     (see [here](<https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.0>)).
     Fortunately, Homebrew has the `arm64` build:
 
     ```
+	brew update
     brew install llvm
     ```
 
@@ -57,7 +58,7 @@ before proceeding with installation.
 
     See `R-admin` C.3.10.1 _Native builds_.
 
-5.  Install X Window System implementation from
+5.  Install an X Window System implementation from
     [XQuartz](https://www.xquartz.org/) disk image:
 
     ```
@@ -92,7 +93,7 @@ make clean
 make preconfigure
 ```
 
-to download and unpack R sources into
+to download and unpack the R sources into
 `SRCDIR=R-<major>.<minor>.<patch>` (version set in `Makefile`) and 
 create a build directory `BLDDIR=R-<major>.<minor>.<patch>-build`
 containing a copy of `config.site`. Run
@@ -101,11 +102,11 @@ containing a copy of `config.site`. Run
 make configure
 ```
 
-to configure `BLDDIR` and create a makefile there. `configure` 
+to configure `BLDDIR` and create a Makefile there. `configure` 
 flags can be set beforehand in `Makefile`; for documentation, 
 run `SRCDIR/configure --help`. Compiler flags and other options 
 can be set beforehand in `BLDDIR/config.site`; comments there 
-provide some documentation, though `R-admin` should be scanned 
+provide _some_ documentation, though `R-admin` should be scanned 
 for platform-specific notes. To reconfigure with modified flags, 
 do `make deconfigure` before repeating `make configure`.
 Finally, run
@@ -116,5 +117,5 @@ make check
 sudo make install
 ```
 
-to build R in `BLDDIR` and check and install the build.
-Note that R can be run directly from `BLDDIR`.
+to build R in `BLDDIR` and check and install the build. Note that the
+installation is optional, as R can be run directly from `BLDDIR/bin`.
