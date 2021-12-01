@@ -13,9 +13,10 @@ satisfied before proceeding with installation.
     and install by unpacking to root:
     
     ```
-    wget -r -np -nH -A "*.tar.gz" https://mac.r-project.org/libs-arm64/
+	wget -r -np -nH -A "*.tar.gz" https://mac.r-project.org/libs-arm64/
     # remove `<lib>-a.b.c-<arch>.tar.gz` if `<lib>-x.y.z-<arch>.tar.gz` exists and `x.y.z > a.b.c`
-    for filename in $(ls -d libs-arm64/*); do tar xvf "$filename" -C /; done
+    sudo mkdir -p /opt/R/arm64
+	for filename in $(ls -d libs-arm64/*); do tar xvf "$filename" -C /; done
     ```
 
     Fortran compiler `gfortran` is included among these.
