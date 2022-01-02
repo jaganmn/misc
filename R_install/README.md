@@ -13,10 +13,10 @@ satisfied before proceeding with installation.
     and install by unpacking to root:
     
     ```
-	wget -r -np -nH -A "*.tar.gz" https://mac.r-project.org/libs-arm64/
+    wget -r -np -nH -A "*.tar.gz" https://mac.r-project.org/libs-arm64/
     # remove `<lib>-a.b.c-<arch>.tar.gz` if `<lib>-x.y.z-<arch>.tar.gz` exists and `x.y.z > a.b.c`
     sudo mkdir -p /opt/R/arm64
-	for filename in $(ls -d libs-arm64/*); do tar xvf "$filename" -C /; done
+    for filename in $(ls -d libs-arm64/*); do tar xvf "$filename" -C /; done
     ```
 
     Fortran compiler `gfortran` is included among these.
@@ -31,13 +31,13 @@ satisfied before proceeding with installation.
     See `R-admin` C.3.10.1 _Native builds_.
     
 2.  Install the [LLVM](https://llvm.org/) `clang` toolchain, which,
-	unlike Apple `clang`, supports OpenMP. At the time of writing,
+    unlike Apple `clang`, supports OpenMP. At the time of writing,
     LLVM only supplies binaries for the `x86_64` architecture
     (see [here](<https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.0>)).
     Fortunately, Homebrew has the `arm64` build:
 
     ```
-	brew update
+    brew update
     brew install llvm
     ```
 
