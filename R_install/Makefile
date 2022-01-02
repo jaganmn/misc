@@ -29,13 +29,14 @@ configure:
 		--enable-prebuilt-html \
 		--enable-memory-profiling \
 		--enable-lto \
+		--disable-java \
 		--x-includes=/opt/X11/include \
 		--x-libraries=/opt/X11/lib \
 		--with-blas="-framework Accelerate" \
 		--with-tcl-config=/Library/Frameworks/Tcl.framework/tclConfig.sh \
 		--with-tk-config=/Library/Frameworks/Tk.framework/tkConfig.sh \
 		PKG_CONFIG=/opt/R/arm64/bin/pkg-config \
-		PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/opt/homebrew/opt/zlib/lib/pkgconfig
+		PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/homebrew/opt/readline/lib/pkgconfig:/opt/homebrew/opt/zlib/lib/pkgconfig
 
 deconfigure:
 	$(MAKE) -C $(BLDDIR) distclean
