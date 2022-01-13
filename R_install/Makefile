@@ -3,11 +3,11 @@ MINOR=1
 PATCH=2
 VERSION=$(MAJOR).$(MINOR).$(PATCH)
 SRCDIR=R-$(VERSION)
-BLDDIR=$(SRCDIR)-build
+BUILDDIR=$(SRCDIR)/BUILDDIR
 TARBALL=$(SRCDIR).tar.gz
-MAKEFILE=$(BLDDIR)/Makefile
+MAKEFILE=$(BUILDDIR)/Makefile
 
-all: clean preconfigure
+all: new set-up
 
 $(TARBALL):
 	curl -O https://cran.r-project.org/src/base/R-$(MAJOR)/$@
@@ -16,20 +16,21 @@ $(SRCDIR): $(TARBALL)
 	rm -rf $@
 	tar xvf $<
 
-$(BLDDIR): config.site
+$(BUILDDIR): config.site
 	rm -rf $@
 	mkdir $@
 	cp $< $@
 
-preconfigure: $(BLDDIR) $(SRCDIR)
+set-up: $(SRCDIR) $(BUILDDIR)
 
 configure:
-	cd $(BLDDIR) && ../$(SRCDIR)/configure \
+	cd $(BUILDDIR) && ../configure \
 		--enable-R-framework \
-		--enable-prebuilt-html \
 		--enable-memory-profiling \
 		--enable-lto \
+		--enable-prebuilt-html \
 		--disable-java \
+		--build=aarch64-apple-darwin20 \
 		--x-includes=/opt/X11/include \
 		--x-libraries=/opt/X11/lib \
 		--with-blas="-framework Accelerate" \
@@ -38,22 +39,33 @@ configure:
 		PKG_CONFIG=/opt/R/arm64/bin/pkg-config \
 		PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/homebrew/opt/readline/lib/pkgconfig:/opt/homebrew/opt/zlib/lib/pkgconfig
 
-deconfigure:
-	$(MAKE) -C $(BLDDIR) distclean
-
 build:
-	$(MAKE) -C $(BLDDIR)
-	$(MAKE) -C $(BLDDIR) pdf
-	$(MAKE) -C $(BLDDIR) info
+	$(MAKE) -C $(BUILDDIR)
+
+build-extra:
+	$(MAKE) -C $(BUILDDIR) pdf
+	$(MAKE) -C $(BUILDDIR) info
+
+build-all: build build-extra
 
 check:
-	$(MAKE) -C $(BLDDIR) check-all
+	$(MAKE) -C $(BUILDDIR) check
+
+check-all:
+	$(MAKE) -C $(BUILDDIR) check-devel
 
 install:
-	$(MAKE) -C $(BLDDIR) install
-	$(MAKE) -C $(BLDDIR) install-pdf
-	$(MAKE) -C $(BLDDIR) install-info
-	$(MAKE) -C $(BLDDIR) install-tests
+	$(MAKE) -C $(BUILDDIR) install
+
+install-extra:
+	$(MAKE) -C $(BUILDDIR) install-pdf
+	$(MAKE) -C $(BUILDDIR) install-info
+	$(MAKE) -C $(BUILDDIR) install-tests
+
+install-all: install install-extra
 
 clean:
-	rm -rf $(TARBALL) $(BLDDIR) *~
+	$(MAKE) -C $(BUILDDIR) distclean
+
+new:
+	rm -rf $(TARBALL) $(BUILDDIR) $(SRCDIR)

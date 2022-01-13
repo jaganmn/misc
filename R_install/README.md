@@ -1,4 +1,5 @@
-# Installing R from sources with OpenMP support on Apple silicon
+# Installing R from sources with OpenMP support on Apple silicon (Big
+Sur only)
 
 Rough notes based on a drunken reading of `R-admin`...
 
@@ -18,7 +19,7 @@ satisfied before proceeding with installation.
     sudo mkdir -p /opt/R/arm64
     for filename in $(ls -d libs-arm64/*); do tar xvf "$filename" -C /; done
     ```
-
+	
     Fortran compiler `gfortran` is included among these.
     `readline` and `zlib` are not, so install with Homebrew instead:
     
@@ -30,17 +31,14 @@ satisfied before proceeding with installation.
 
     See `R-admin` C.3.10.1 _Native builds_.
     
-2.  Install the [LLVM](https://llvm.org/) `clang` toolchain, which,
-    unlike Apple `clang`, supports OpenMP. At the time of writing,
-    LLVM only supplies binaries for the `x86_64` architecture
-    (see [here](<https://github.com/llvm/llvm-project/releases/tag/llvmorg-12.0.0>)).
-    Fortunately, Homebrew has the `arm64` build:
-
+2.  Install the [LLVM](https://llvm.org/) `clang` toolchain with
+	Homebrew. Unlike Apple's `clang`, it supports OpenMP.
+	
+    ```bash
+    $ brew update
+    $ brew install llvm 
     ```
-    brew update
-    brew install llvm
-    ```
-
+	
     See `R-admin` C.3.3 _Other C/C++ compilers_.
 
 3.  Install Apple's Command Line Tools:
@@ -60,21 +58,11 @@ satisfied before proceeding with installation.
     See `R-admin` C.3.10.1 _Native builds_.
 
 5.  Install an X Window System implementation from
-    [XQuartz](https://www.xquartz.org/) disk image:
-
-    ```
-    curl -O https://github.com/XQuartz/XQuartz/releases/download/XQuartz-2.8.1/XQuartz-2.8.1.dmg
-    ```
-
-    See `R-admin` C.3.1 _Prerequisites_.
+    [XQuartz](https://www.xquartz.org/).
+	See `R-admin` C.3.1 _Prerequisites_.
 
 6.  Install a full TeX distribition from [MacTeX](https://tug.org/mactex/):
-
-    ```
-    curl -O https://mirror.ctan.org/systems/mac/mactex/MacTeX.pkg
-    ```
-
-    See `R-admin` C.3.4 _Other libraries_.
+	See `R-admin` C.3.4 _Other libraries_.
 
 7.  For Cairo graphics, ensure that all required libraries exist:
     
@@ -90,27 +78,26 @@ satisfied before proceeding with installation.
 Run
 
 ```
-make clean
-make preconfigure
+make new
+make set-up
 ```
 
 to download and unpack the R sources into
-`SRCDIR=R-<major>.<minor>.<patch>` (version set in `Makefile`) and 
-create a build directory `BLDDIR=R-<major>.<minor>.<patch>-build`
-containing a copy of `config.site`. Run
+`SRCDIR=R-<major>.<minor>.<patch>` (version set in `Makefile`) and
+create a build directory `BUILDDIR=$(SRCDIR)/BUILDDIR` containing a
+copy of `config.site`. Then run
 
 ```
 make configure
 ```
 
-to configure `BLDDIR` and create a Makefile there. `configure` 
-flags can be set beforehand in `Makefile`; for documentation, 
-run `SRCDIR/configure --help`. Compiler flags and other options 
-can be set beforehand in `BLDDIR/config.site`; comments there 
-provide _some_ documentation, though `R-admin` should be scanned 
-for platform-specific notes. To reconfigure with modified flags, 
-do `make deconfigure` before repeating `make configure`.
-Finally, run
+to configure `BUILDDIR` and create a Makefile there. `configure` 
+flags are set beforehand in `Makefile`; for documentation, run 
+`SRCDIR/configure --help`. Compiler flags and other options can 
+be set beforehand in `BUILDDIR/config.site`; comments there provide 
+_some_ documentation, though `R-admin` should be scanned for 
+platform-specific notes. To reconfigure with modified flags, 
+do `make clean` before repeating `make configure`. Finally, run
 
 ```
 make build
@@ -118,5 +105,6 @@ make check
 sudo make install
 ```
 
-to build R in `BLDDIR` and check and install the build. Note that the
-installation is optional, as R can be run directly from `BLDDIR/bin`.
+to build R in `BUILDDIR` and check and install the build. 
+Note that the check and install are both optional, as R 
+can be run directly from `BUILDDIR/bin` after `make build`.

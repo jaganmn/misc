@@ -1,16 +1,16 @@
-#! /bin/sh
+#!/bin/sh
 
-LIBS_HOME=/opt/R/arm64
-GFORTRAN_HOME=${LIBS_HOME}/gfortran
+LIBS_DIR=/opt/R/arm64
+GFORTRAN_DIR=${LIBS_DIR}/gfortran
 
-X_HOME=/opt/X11
+X_DIR=/opt/X11
 
-BREW_HOME=/opt/homebrew/opt
-LLVM_HOME=${BREW_HOME}/llvm
-RDLN_HOME=${BREW_HOME}/readline
-ZLIB_HOME=${BREW_HOME}/zlib
+BREW_DIR=/opt/homebrew/opt
+LLVM_DIR=${BREW_DIR}/llvm
+RDLN_DIR=${BREW_DIR}/readline
+ZLIB_DIR=${BREW_DIR}/zlib
 
-SDK_HOME=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
+SDK_DIR=/Library/Developer/CommandLineTools/SDKs/MacOSX.sdk
 
 ### This file is part of R.
 ###
@@ -55,7 +55,7 @@ R_BATCHSAVE=--no-save
 ## To override this choice, specify the name or path of the command
 ## which runs the compiler, for example 'c99'.
 ## It is also necessary to set the architecture here, e.g. 'gcc -m32'.
-CC="${LLVM_HOME}/bin/clang -isysroot ${SDK_HOME} -target arm64-apple-macos11"
+CC="${LLVM_DIR}/bin/clang -isysroot ${SDK_DIR} -target arm64-apple-macos11"
 OBJC=${CC}
 
 ## Debugging and optimization options for the C compiler.
@@ -65,7 +65,7 @@ OBJC=${CC}
 ## and '-g' in all other cases except icc (for which see R-admin.html).
 ## Be wary of aggressive settings such as -ffast-math, -Ofast and
 ## -Werror (which is likely to cause configure to fail).
-CFLAGS="-falign-functions=8 -g -O2 -Wall -pedantic -Wno-implicit-function-declaration"
+CFLAGS="-falign-functions=64 -g -O2 -Wall -pedantic -Wno-implicit-function-declaration"
 
 ## Defines for C compilation.
 ## Use this to specify defines to be used in the compilation of R,
@@ -82,15 +82,15 @@ CFLAGS="-falign-functions=8 -g -O2 -Wall -pedantic -Wno-implicit-function-declar
 ## options (such as defines) for the C preprocessor and compiler.
 ## If unset defaults to '-I/usr/local/include', with '-I/sw/include'
 ## prepended on systems using Fink with root '/sw'.
-CPPFLAGS="-I${LLVM_HOME}/include -I${RDLN_HOME}/include -I${ZLIB_HOME}/include -I${LIBS_HOME}/include"
+CPPFLAGS="-I${LLVM_DIR}/include -I${RDLN_DIR}/include -I${ZLIB_DIR}/include -I${LIBS_DIR}/include"
 
 ## The command which runs the Fortran compiler.
 ## Used for both fixed-form and free-form Fortran
-FC="${GFORTRAN_HOME}/bin/gfortran -mtune=native"
+FC="${GFORTRAN_DIR}/bin/gfortran -mtune=native"
 
 ## Options for the Fortran compiler.
 ## Use this to specify comilation flags for fixed-form Fortran.
-## FFLAGS=
+FFLAGS=-Wall -g -O2 -pedantic $(LTO_FC)
 ## Ditto for free-form Fortran.
 ## FCFLAGS=
 ## If just one of these is set, it is used for both.
@@ -173,7 +173,7 @@ FC="${GFORTRAN_HOME}/bin/gfortran -mtune=native"
 ## on macOS systems using Fink with root '/sw'.
 ## On some Linux 64-bit systems its default is -L/usr/local/lib64.
 ## If LIBnn is set it defaults to -L/usr/local/$LIBnn.
-LDFLAGS="-L${LLVM_HOME}/lib -L${RDLN_HOME}/lib -L${ZLIB_HOME}/lib -L${LIBS_HOME}/lib"
+LDFLAGS="-L${LLVM_DIR}/lib -L${RDLN_DIR}/lib -L${ZLIB_DIR}/lib -L${LIBS_DIR}/lib"
 
 ## The command which runs the C++ compiler.
 ## This is optional, for use in packages.
@@ -181,10 +181,10 @@ LDFLAGS="-L${LLVM_HOME}/lib -L${RDLN_HOME}/lib -L${ZLIB_HOME}/lib -L${LIBS_HOME}
 ## uses the values of the environment variables 'CXX' or 'CCC' if set,
 ## and then looks under the names 'c++', 'g++', 'CC' and more OS-specific
 ## names (from autoconf).
-CXX="${LLVM_HOME}/bin/clang++ -isysroot ${SDK_HOME} -target arm64-apple-macos11"
+CXX="${LLVM_DIR}/bin/clang++ -isysroot ${SDK_DIR} -target arm64-apple-macos11"
 
 ## Options for the C++ compiler.
-CXXFLAGS="-g -O2 -Wall -pedantic"
+CXXFLAGS="-falign-functions=64 -g -O2 -Wall -pedantic"
 
 ## Any special flags which must be used when compiling C++ code to be
 ## turned into a shared object.  If this variable is left unspecified
@@ -255,7 +255,7 @@ R_BROWSER=/Applications/Firefox.app/Contents/MacOS/firefox
 ## This is be default created from libraries added to LIBS.
 ## Used for DYLD_FALLBACK_LIBRARY_PATH on macOS and LD_LIBRARY_PATH elsewhere.
 ## Allow user to override.
-R_LD_LIBRARY_PATH=${LLVM_HOME}/lib:${RDLN_HOME}/lib:${ZLIB_HOME}/lib:${LIBS_HOME}/lib
+R_LD_LIBRARY_PATH=${LLVM_DIR}/lib:${RDLN_DIR}/lib:${ZLIB_DIR}/lib:${LIBS_DIR}/lib
 
 ## C++11 compiler, optional for use in packages.
 ## Introduced in R 3.1.0
@@ -349,9 +349,9 @@ R_LD_LIBRARY_PATH=${LLVM_HOME}/lib:${RDLN_HOME}/lib:${ZLIB_HOME}/lib:${LIBS_HOME
 
 ## Path to the version of pkg-config to be used for locating cairographics,
 ## and possibly jpeg, libpng and libtiff.
-PKG_CONFIG=${LIBS_HOME}/bin/pkg-config
+PKG_CONFIG=${LIBS_DIR}/bin/pkg-config
 ## search path for pkg-config
-PKG_CONFIG_PATH=${LIBS_HOME}/lib/pkgconfig:${X_HOME}/lib/pkgconfig:${RDLN_HOME}/lib/pkgconfig:${ZLIB_HOME}/lib/pkgconfig
+PKG_CONFIG_PATH=${LIBS_DIR}/lib/pkgconfig:${X_DIR}/lib/pkgconfig:${RDLN_DIR}/lib/pkgconfig:${ZLIB_DIR}/lib/pkgconfig
 ## path overriding pkg-config's default search path
 ## PKG_CONFIG_LIBDIR=
 
@@ -393,15 +393,15 @@ R_OPENMP_CFLAGS=-fopenmp
 
 ## Commands which might need to be set for LTO builds
 ## Typical values for LTO are gcc-ar, gcc-nm and gcc-ranlib
-AR=${LLVM_HOME}/bin/llvm-ar
+AR=${LLVM_DIR}/bin/llvm-ar
 ## NM=
-RANLIB=${LLVM_HOME}/bin/llvm-ranlib
+RANLIB=${LLVM_DIR}/bin/llvm-ranlib
 ##
 ## The LTO macro, defaulting to -flto
 ## Could be e.g. -flto=8 for GCC or -flto=thin for clang.
 LTO=-flto=thin
 ## Ditto for the Fortran compiler, defaulting to the value of LTO.
-LTO_FC= 
+LTO_FC=
 ##
 ## Flags for linking with LTO in addition to $(LTO), e.g. to
 ## parallelize ThinLTO or to change linker such as -fuse-ld=gold or
