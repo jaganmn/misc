@@ -84,7 +84,7 @@ make set-up
 
 to download and unpack the R sources into
 `SRCDIR=R-<major>.<minor>.<patch>` (version set in `Makefile`) and
-create a build directory `BUILDDIR=$(SRCDIR)/BUILDDIR` containing a
+create a build directory `BUILDDIR=${SRCDIR}/BUILDDIR` containing a
 copy of `config.site`. Then run
 
 ```

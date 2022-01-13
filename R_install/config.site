@@ -90,7 +90,7 @@ FC="${GFORTRAN_DIR}/bin/gfortran -mtune=native"
 
 ## Options for the Fortran compiler.
 ## Use this to specify comilation flags for fixed-form Fortran.
-FFLAGS=-Wall -g -O2 -pedantic $(LTO_FC)
+FFLAGS=-Wall -g -O2 -pedantic ${LTO_FC}
 ## Ditto for free-form Fortran.
 ## FCFLAGS=
 ## If just one of these is set, it is used for both.
