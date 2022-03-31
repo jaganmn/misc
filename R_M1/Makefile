@@ -1,24 +1,47 @@
 SRCDIR=R-devel
 BUILDDIR=R-devel-build
+FWDIR=/Library/Frameworks/R.framework
+
+TAR_TCL=tcl8.6.12-darwin20.6-arm64.tar.gz
+TAR_TK=tk8.6.12-xft-darwin20.6-arm64.tar.gz
+TAR_TKTABLE=tktable2.10-darwin20.6-arm64.tar.gz
+TAR_GFORTRAN=gfortran-f51f1da0-darwin20.0-arm64.tar.gz
+TAR_OPENMP=openmp-12.0.1-darwin20-Release.tar.gz
+TAR_EXTRAS=$(TAR_TCL) $(TAR_TK) $(TAR_TKTABLE) $(TAR_GFORTRAN) $(TAR_OPENMP)
+
+TAR_RPATCHED=R-4.1-branch.tar.gz
 
 ## Command Line Tools for Xcode
 ## XQuartz
 ## MacTeX
+## CMake
+## pandoc
+## meson
+## ninja
 
 all: update build
 
-install-deps:
-	#cd recipes && bash build.sh all && cd -
-	cd recipes/other/tcltk && \
-		sh build-tcl.sh && \
-		sh build-tk.sh && \
-		sh build-tktable.sh && \
-		cp tcl8.6.12-darwin20.6-arm64.tar.gz tk8.6.12-xft-darwin20.6-arm64.tar.gz tktable2.10-darwin20.6-arm64.tar.gz ../../.. && \
-		cd -
-	wget https://mac.r-project.org/libs-arm64/gfortran-f51f1da0-darwin20.0-arm64.tar.gz
-	wget https://mac.r-project.org/openmp/openmp-12.0.1-darwin20-Release.tar.gz
-	for filename in $$(ls *.tar.gz); do tar xvf "$$filename" -C /; done
+install-deps: install-deps-extra
+	cd recipes && bash build.sh all
+
+install-deps-extra: $(TAR_EXTRAS)
+	for filename in $^; do tar xvf $$filename -C /; done
 	ln -sfn $$(eval xcrun -show-sdk-path) /opt/R/arm64/gfortran/SDK
+
+$(TAR_TCL):
+	cd recipes/other/tcltk && sh build-tcl.sh && cp $@ ../../..
+
+$(TAR_TK):
+	cd recipes/other/tcltk && sh build-tk.sh && cp $@ ../../..
+
+$(TAR_TKTABLE):
+	cd recipes/other/tcltk && sh build-tktable.sh && cp $@ ../../..
+
+$(TAR_GFORTRAN):
+	curl -LO https://mac.r-project.org/libs-arm64/$@
+
+$(TAR_OPENMP):
+	curl -LO https://mac.r-project.org/libs-arm64/$@
 
 update:
 	cd $(SRCDIR) && svn update
@@ -71,7 +94,8 @@ install-extra:
 install-all: install install-extra
 
 install-patched:
-	rm -rf /Library/Frameworks/R.framework
-	wget https://mac.r-project.org/big-sur/R-4.1-branch/arm64/R-4.1-branch.tar.gz
-	tar xvf R-4.1-branch.tar.gz -C /
-	rm -f R-4.1-branch.tar.gz
+	rm -rf $(FWDIR)
+	curl -LO https://mac.r-project.org/big-sur/R-4.1-branch/arm64/$(TAR_RPATCHED)	
+	tar xvf $(TAR_RPATCHED) -C /
+	for cmdname in R Rscript; do ln -sfn $(FWDIR)/Resources/bin/$$cmdname /usr/local/bin/$$cmdname; done
+	rm -f $(TAR_RPATCHED)
