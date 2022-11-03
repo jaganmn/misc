@@ -52,12 +52,13 @@ configure:
 	mkdir $(BUILDDIR)
 	cp config.site $(BUILDDIR)
 	cd $(BUILDDIR) && ../$(SRCDIR)/configure \
+		--enable-R-framework \
 		--enable-R-shlib \
 		--enable-BLAS-shlib \
 		--enable-lto \
 		--enable-memory-profiling \
 		--enable-prebuilt-html \
-		--without-recommended-packages \
+		--with-recommended-packages \
 		--disable-java \
 		--build=aarch64-apple-darwin20 \
 		--x-includes=/opt/X11/include \
@@ -100,3 +101,4 @@ install-patched:
 	tar xvf $(TAR_RPATCHED) -C /
 	for cmdname in R Rscript; do ln -sfn $(FWDIR)/Resources/bin/$$cmdname /usr/local/bin/$$cmdname; done
 	rm -f $(TAR_RPATCHED)
+	R CMD javareconf
