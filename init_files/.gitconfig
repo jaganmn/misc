@@ -1,0 +1,7 @@
+[user]
+	name = Mikael Jagan
+	email = jaganmn@mcmaster.ca
+[core]
+	editor = /Applications/Emacs.app/Contents/MacOS/Emacs
+[init]
+	defaultBranch = master
