@@ -15,7 +15,9 @@ options(browserNLdisabled = TRUE,
                 r["BioCsoft"] <- "%bm/packages/%v/bioc"
                 r["BioCann"] <- "%bm/packages/%v/data/annotation"
                 r["BioCexp"] <- "%bm/packages/%v/data/experiment"
-                tools:::.expand_BioC_repository_URLs(r)
+                if(getRversion() < "4.3.0")
+                    tools:::.expand_BioC_repository_URLs(r)
+                else utils:::.expand_BioC_repository_URLs(r)
             }),
         pkgType = "source",
         install.packages.compile.from.source = "always",
