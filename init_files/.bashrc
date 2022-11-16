@@ -1,11 +1,17 @@
 alias sudo="sudo "
-alias R="R --quiet --no-save --no-restore"
 alias ls="ls -ahFGT"
+
+alias R=R-4.2
+alias R-dev="/Users/mikael/Desktop/R/R-dev-build/bin/R --quiet --no-save --no-restore"
+alias R-4.2="/Users/mikael/Desktop/R/R-4.2-build/bin/R --quiet --no-save --no-restore"
+alias R-4.1="/Users/mikael/Desktop/R/R-4.1-build/bin/R --quiet --no-save --no-restore"
+alias R-4.0="/Users/mikael/Desktop/R/R-4.0-build/bin/R --quiet --no-save --no-restore"
+alias R-3.6="/Users/mikael/Desktop/R/R-3.6-build/bin/R --quiet --no-save --no-restore"
+alias R-3.5="/Users/mikael/Desktop/R/R-3.5-build/bin/R --quiet --no-save --no-restore"
 
 alias discord="/Applications/Discord.app/Contents/MacOS/Discord"
 alias emacs="/Applications/Emacs.app/Contents/MacOS/Emacs"
 alias firefox="/Applications/Firefox.app/Contents/MacOS/firefox"
-alias rstudio="/Applications/RStudio.app/Contents/MacOS/RStudio"
 alias safari="/Applications/Safari.app/Contents/MacOS/Safari"
 alias skype="/Applications/Skype.app/Contents/MacOS/Skype"
 alias slack="/Applications/Slack.app/Contents/MacOS/Slack"
