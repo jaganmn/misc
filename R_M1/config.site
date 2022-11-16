@@ -56,7 +56,7 @@ OBJC=${CC}
 ## and '-g' in all other cases except icc (for which see R-admin.html).
 ## Be wary of aggressive settings such as -ffast-math, -Ofast and
 ## -Werror (which is likely to cause configure to fail).
-CFLAGS="-falign-functions=64 -g -O2 -Wall -pedantic -Wno-implicit-function-declaration"
+CFLAGS="-Wall -g -O2 -pedantic -Wno-implicit-function-declaration -falign-functions=64"
 
 ## Defines for C compilation.
 ## Use this to specify defines to be used in the compilation of R,
