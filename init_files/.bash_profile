@@ -6,6 +6,4 @@ export PS1="\[\033[7;37m\]\A\[\033[00m\] \[\033[1;37m\]\u\[\033[00m\] \[\033[1;3
 
 export BASH_SILENCE_DEPRECATION_WARNING=1
 
-#eval "$(/opt/homebrew/bin/brew shellenv)"
-
 [ -r ~/.bashrc ] && source ~/.bashrc
