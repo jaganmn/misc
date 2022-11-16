@@ -1,4 +1,4 @@
-VER = devel
+VER = dev
 SRCDIR = R-$(VER)
 BUILDDIR = $(SRCDIR)-build
 
