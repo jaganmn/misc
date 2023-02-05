@@ -1,41 +1,12 @@
-VER = dev
+VER = 4.2
 SRCDIR = R-$(VER)
 BUILDDIR = $(SRCDIR)-build
 
-TAR_TCL = tcl8.6.12-darwin20.6-arm64.tar.gz
-TAR_TK = tk8.6.12-xft-darwin20.6-arm64.tar.gz
-TAR_TKTABLE = tktable2.10-darwin20.6-arm64.tar.gz
-TAR_GFORTRAN = gfortran-12.0.1-20220312-is-darwin20-arm64.tar.xz
-TAR_OPENMP = openmp-12.0.1-darwin20-Release.tar.gz
-TAR_EXTRAS = $(TAR_TCL) $(TAR_TK) $(TAR_TKTABLE) $(TAR_GFORTRAN) $(TAR_OPENMP)
-
-.PHONY : all install-deps install-deps-extra update configure \
+.PHONY : all update configure \
 	build build-extra build-all check check-all \
 	install install-extra install-all uninstall 
 
 all : configure build
-
-install-deps : install-deps-extra
-	cd recipes && bash build.sh all
-
-install-deps-extra : $(TAR_EXTRAS)
-	for filename in $^; do tar xvf $$filename -C /; done
-	ln -sfn $$(eval xcrun --show-sdk-path) /opt/R/arm64/gfortran/SDK
-
-$(TAR_TCL) :
-	cd recipes/other/tcltk && sh build-tcl.sh && cp $@ ../../..
-
-$(TAR_TK) :
-	cd recipes/other/tcltk && sh build-tk.sh && cp $@ ../../..
-
-$(TAR_TKTABLE) :
-	cd recipes/other/tcltk && sh build-tktable.sh && cp $@ ../../..
-
-$(TAR_GFORTRAN) :
-	curl -LO https://mac.r-project.org/tools/$@
-
-$(TAR_OPENMP) :
-	curl -LO https://mac.r-project.org/openmp/$@
 
 update :
 	cd $(SRCDIR) && svn update
@@ -56,8 +27,8 @@ configure :
 		--with-blas="-framework Accelerate" \
 		--with-tcl-config=/opt/R/arm64/lib/tclConfig.sh \
 		--with-tk-config=/opt/R/arm64/lib/tkConfig.sh \
-		PKG_CONFIG=/opt/R/arm64/bin/pkg-config \
-		PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/usr/local/lib/pkgconfig:/opt/X11/lib/pkgconfig
+		PKG_CONFIG=/usr/local/bin/pkg-config \
+		PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
 	cp $(BUILDDIR)/config.log .
 
 build:

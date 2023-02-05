@@ -1,8 +1,5 @@
 #! /bin/sh
 
-_LIB_DIR_=/opt/R/arm64
-_OTHER_LIB_DIR_=/usr/local
-
 ### This file is part of R.
 ###
 ### R is free software; you can redistribute it and/or modify it under
@@ -39,7 +36,7 @@ _OTHER_LIB_DIR_=/usr/local
 ## Note that this applies to interactive and batch use, 
 ## but NOT to the utility R CMD BATCH 
 ## (which defaults to --save irrespective of this setting)
-R_BATCHSAVE=--no-save
+## R_BATCHSAVE=
 
 ## The command which runs the C compiler.
 ## If unspecified, a search is made for gcc and cc (in that order).
@@ -56,7 +53,7 @@ OBJC=${CC}
 ## and '-g' in all other cases except icc (for which see R-admin.html).
 ## Be wary of aggressive settings such as -ffast-math, -Ofast and
 ## -Werror (which is likely to cause configure to fail).
-CFLAGS="-Wall -g -O2 -pedantic -Wno-implicit-function-declaration -falign-functions=64"
+CFLAGS="-Wall -g -O2 -pedantic -Wno-implicit-function-declaration -falign-functions=8"
 
 ## Defines for C compilation.
 ## Use this to specify defines to be used in the compilation of R,
@@ -73,15 +70,15 @@ CFLAGS="-Wall -g -O2 -pedantic -Wno-implicit-function-declaration -falign-functi
 ## options (such as defines) for the C preprocessor and compiler.
 ## If unset defaults to '-I/usr/local/include', with '-I/sw/include'
 ## prepended on systems using Fink with root '/sw'
-CPPFLAGS="-I${_LIB_DIR_}/include -I${_OTHER_LIB_DIR_}/include -Xclang -fopenmp"
+CPPFLAGS="-I$/opt/R/arm64/include -I$/usr/local/include"
 
 ## The command which runs the Fortran compiler.
 ## Used for both fixed-form and free-form Fortran
-FC="${_LIB_DIR_}/gfortran/bin/gfortran -mtune=native"
+FC="/opt/R/arm64/gfortran/bin/gfortran -mtune=native"
 
 ## Options for the Fortran compiler.
 ## Use this to specify comilation flags for fixed-form Fortran.
-FFLAGS="-Wall -g -O2 -pedantic"
+FFLAGS="-Wall -g -O2 -pedantic -mmacosx-version-min=11.0"
 ## Ditto for free-form Fortran.
 ## FCFLAGS=
 ## If just one of these is set, it is used for both.
@@ -164,7 +161,7 @@ FFLAGS="-Wall -g -O2 -pedantic"
 ## on macOS systems using Fink with root '/sw'.
 ## On some Linux 64-bit systems its default is -L/usr/local/lib64.
 ## If LIBnn is set it defaults to -L/usr/local/$LIBnn.
-LDFLAGS="-L${_LIB_DIR_}/lib -L${_OTHER_LIB_DIR_}/lib -lomp"
+LDFLAGS="-L/opt/R/arm64/lib -L/usr/local/lib"
 
 ## The command which runs the C++ compiler.
 ## This is optional, for use in packages.
@@ -175,7 +172,7 @@ LDFLAGS="-L${_LIB_DIR_}/lib -L${_OTHER_LIB_DIR_}/lib -lomp"
 CXX="clang++ -arch arm64"
 
 ## Options for the C++ compiler.
-CXXFLAGS="-falign-functions=64 -g -O2 -Wall -pedantic"
+CXXFLAGS="-Wall -g -O2 -pedantic -falign-functions=8"
 
 ## Any special flags which must be used when compiling C++ code to be
 ## turned into a shared object.  If this variable is left unspecified
@@ -246,7 +243,7 @@ R_BROWSER=/Applications/Firefox.app/Contents/MacOS/firefox
 ## This is be default created from libraries added to LIBS.
 ## Used for DYLD_FALLBACK_LIBRARY_PATH on macOS and LD_LIBRARY_PATH elsewhere.
 ## Allow user to override.
-R_LD_LIBRARY_PATH=${_LIB_DIR_}/lib:${_OTHER_LIB_DIR_}/lib
+R_LD_LIBRARY_PATH=/opt/R/arm64/lib:/usr/local/lib
 
 ## C++11 compiler, optional for use in packages.
 ## Introduced in R 3.1.0
@@ -341,9 +338,9 @@ R_LD_LIBRARY_PATH=${_LIB_DIR_}/lib:${_OTHER_LIB_DIR_}/lib
 
 ## Path to the version of pkg-config to be used for locating cairographics,
 ## and possibly jpeg, libpng and libtiff.
-PKG_CONFIG=${_LIB_DIR_}/bin/pkg-config
+PKG_CONFIG=/usr/local/bin/pkg-config
 ## search path for pkg-config
-PKG_CONFIG_PATH=${_LIB_DIR_}/lib/pkgconfig:${_OTHER_LIB_DIR_}/lib/pkgconfig:/opt/X11/lib/pkgconfig
+PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
 ## path overriding pkg-config's default search path
 ## PKG_CONFIG_LIBDIR=
 

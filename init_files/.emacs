@@ -5,10 +5,14 @@
 (setq require-final-newline t)
 (setq save-abbrevs nil)
 (setq show-paren-style 'parenthesis) ; otherwise 'expression
+(setq font-latex-fontify-script nil)
+
 (add-to-list 'default-frame-alist '(width  . 80))
 (add-to-list 'default-frame-alist '(height . 40))
 (add-to-list 'default-frame-alist '(font   . "Menlo-18"))
 (load-theme 'misterioso t)
+
+(remove-hook 'text-mode-hook 'turn-on-auto-fill)
 
 ;;; ESS
 (add-hook 'ess-mode-hook
