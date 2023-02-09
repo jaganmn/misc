@@ -43,7 +43,7 @@
 ## To override this choice, specify the name or path of the command
 ## which runs the compiler, for example 'c99'.
 ## It is also necessary to set the architecture here, e.g. 'gcc -m32'.
-CC="clang -arch arm64"
+CC=clang
 OBJC=${CC}
 
 ## Debugging and optimization options for the C compiler.
@@ -53,7 +53,7 @@ OBJC=${CC}
 ## and '-g' in all other cases except icc (for which see R-admin.html).
 ## Be wary of aggressive settings such as -ffast-math, -Ofast and
 ## -Werror (which is likely to cause configure to fail).
-CFLAGS="-Wall -g -O2 -pedantic -Wno-implicit-function-declaration -falign-functions=8"
+CFLAGS="-g -O2 -Wall -pedantic -mmacosx-version-min=11.0 -arch arm64 -falign-functions=8 -Wno-error=implicit-function-declaration"
 
 ## Defines for C compilation.
 ## Use this to specify defines to be used in the compilation of R,
@@ -70,7 +70,7 @@ CFLAGS="-Wall -g -O2 -pedantic -Wno-implicit-function-declaration -falign-functi
 ## options (such as defines) for the C preprocessor and compiler.
 ## If unset defaults to '-I/usr/local/include', with '-I/sw/include'
 ## prepended on systems using Fink with root '/sw'
-CPPFLAGS="-I$/opt/R/arm64/include -I$/usr/local/include"
+CPPFLAGS="-I/opt/R/arm64/include -I/usr/local/include"
 
 ## The command which runs the Fortran compiler.
 ## Used for both fixed-form and free-form Fortran
@@ -78,7 +78,7 @@ FC="/opt/R/arm64/gfortran/bin/gfortran -mtune=native"
 
 ## Options for the Fortran compiler.
 ## Use this to specify comilation flags for fixed-form Fortran.
-FFLAGS="-Wall -g -O2 -pedantic -mmacosx-version-min=11.0"
+FFLAGS="-g -O2 -Wall -pedantic -mmacosx-version-min=11.0"
 ## Ditto for free-form Fortran.
 ## FCFLAGS=
 ## If just one of these is set, it is used for both.
@@ -169,10 +169,10 @@ LDFLAGS="-L/opt/R/arm64/lib -L/usr/local/lib"
 ## uses the values of the environment variables 'CXX' or 'CCC' if set,
 ## and then looks under the names 'c++', 'g++', 'CC' and more OS-specific
 ## names (from autoconf).
-CXX="clang++ -arch arm64"
+CXX=clang++
 
 ## Options for the C++ compiler.
-CXXFLAGS="-Wall -g -O2 -pedantic -falign-functions=8"
+CXXFLAGS="-g -O2 -Wall -pedantic -mmacosx-version-min=11.0 -arch arm64 -falign-functions=8"
 
 ## Any special flags which must be used when compiling C++ code to be
 ## turned into a shared object.  If this variable is left unspecified
@@ -340,7 +340,7 @@ R_LD_LIBRARY_PATH=/opt/R/arm64/lib:/usr/local/lib
 ## and possibly jpeg, libpng and libtiff.
 PKG_CONFIG=/usr/local/bin/pkg-config
 ## search path for pkg-config
-PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
+PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig
 ## path overriding pkg-config's default search path
 ## PKG_CONFIG_LIBDIR=
 

@@ -1,0 +1,12 @@
+diff -ruN lz4-1.9.4/lib/Makefile lz4-1.9.4-patched/lib/Makefile
+--- lz4-1.9.4/lib/Makefile	2022-08-15 18:45:31.000000000 -0400
++++ lz4-1.9.4-patched/lib/Makefile	2023-02-06 14:04:07.000000000 -0500
+@@ -43,7 +43,7 @@
+ LIBVER_PATCH := $(shell echo $(LIBVER_PATCH_SCRIPT))
+ LIBVER  := $(shell echo $(LIBVER_SCRIPT))
+ 
+-BUILD_SHARED:=yes
++BUILD_SHARED:=no
+ BUILD_STATIC:=yes
+ 
+ CPPFLAGS+= -DXXH_NAMESPACE=LZ4_

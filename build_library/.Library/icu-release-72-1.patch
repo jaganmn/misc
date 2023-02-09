@@ -1,0 +1,12 @@
+diff -ruN icu-release-72-1/icu4c/source/common/unicode/uconfig.h icu-release-72-1-patched/icu4c/source/common/unicode/uconfig.h
+--- icu-release-72-1/icu4c/source/common/unicode/uconfig.h	2022-10-13 19:23:11.000000000 -0400
++++ icu-release-72-1-patched/icu4c/source/common/unicode/uconfig.h	2023-02-06 17:34:40.000000000 -0500
+@@ -89,7 +89,7 @@
+  * @internal
+  */
+ #ifndef U_DISABLE_RENAMING
+-#define U_DISABLE_RENAMING 0
++#define U_DISABLE_RENAMING 1
+ #endif
+ 
+ /**

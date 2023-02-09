@@ -28,7 +28,7 @@ configure :
 		--with-tcl-config=/opt/R/arm64/lib/tclConfig.sh \
 		--with-tk-config=/opt/R/arm64/lib/tkConfig.sh \
 		PKG_CONFIG=/usr/local/bin/pkg-config \
-		PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
+		PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig
 	cp $(BUILDDIR)/config.log .
 
 build:

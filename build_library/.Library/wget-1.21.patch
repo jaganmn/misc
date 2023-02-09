@@ -1,0 +1,11 @@
+diff -ruN wget-1.21/lib/utime.c wget-1.21-patched/lib/utime.c
+--- wget-1.21/lib/utime.c	2020-12-31 10:53:25.000000000 -0500
++++ wget-1.21-patched/lib/utime.c	2023-02-06 19:29:47.000000000 -0500
+@@ -261,6 +261,7 @@
+ 
+ #else
+ 
++# include <errno.h>
+ # include <sys/stat.h>
+ # include "filename.h"
+ 
