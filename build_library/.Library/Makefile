@@ -22,6 +22,7 @@ LIBS =
 
 PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig:/usr/lib/pkgconfig
 
+
 export CC
 export CXX
 export CFLAGS
@@ -32,9 +33,67 @@ export LIBS
 export PKG_CONFIG_PATH
 
 
+.PHONY: all
 all:
 	# do nothing
 
+.PHONY: toutes
+toutes:
+	$(MAKE) pkg-config
+	$(MAKE) make
+	$(MAKE) libiconv
+	$(MAKE) gettext
+	$(MAKE) libiconv
+	$(MAKE) gettext
+	$(MAKE) make
+	$(MAKE) libunistring
+	$(MAKE) icu
+	$(MAKE) texinfo
+	$(MAKE) readline
+	$(MAKE) m4
+	$(MAKE) autoconf
+	$(MAKE) automake
+	$(MAKE) gmp
+	$(MAKE) mpfr
+	$(MAKE) mpc
+	$(MAKE) isl
+	$(MAKE) gsl
+	$(MAKE) glpk
+	$(MAKE) zlib
+	$(MAKE) pcre2
+	$(MAKE) libidn2
+	$(MAKE) openssl
+	$(MAKE) wget
+	$(MAKE) lz4
+	$(MAKE) xz
+	$(MAKE) zstd
+	$(MAKE) libssh2
+	$(MAKE) libxml2
+	$(MAKE) expat
+	$(MAKE) curl
+	$(MAKE) libpng
+	$(MAKE) jpeg
+	$(MAKE) tiff
+	$(MAKE) libwebp
+	$(MAKE) tiff
+	$(MAKE) libffi
+	$(MAKE) pixman
+	$(MAKE) glib
+	$(MAKE) freetype
+	$(MAKE) harfbuzz
+	$(MAKE) freetype
+	$(MAKE) fontconfig
+	$(MAKE) fribidi
+	$(MAKE) cairo
+	$(MAKE) harfbuzz
+	$(MAKE) pango
+	$(MAKE) ghostscript
+	$(MAKE) qpdf
+	$(MAKE) sqlite
+	$(MAKE) apr
+	$(MAKE) apr-util
+	$(MAKE) serf
+	$(MAKE) subversion
 
 .PHONY: pkg-config
 pkg-config: ver = 0.29.2
@@ -227,7 +286,7 @@ openssl:
 .PHONY: wget
 wget: ver = 1.21
 wget: cfg = $(AUTOFLAGS) --with-ssl=openssl
-# wget: export CPPFLAGS += $(shell pkg-config --cflags-only-I libidn2)
+# wget: export CPPFLAGS += $(shell pkg-config --cflags libidn2)
 # wget: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other libidn2)
 # wget: export LIBS += $(shell pkg-config --static --libs-only-l libidn2)
 wget:
@@ -300,7 +359,7 @@ expat:
 .PHONY: curl
 curl: ver = 7.87.0
 curl: cfg = $(AUTOFLAGS) --with-openssl --with-zlib --with-zstd --with-libssh2
-curl: export CPPFLAGS += $(shell pkg-config --cflags-only-I libidn2)
+curl: export CPPFLAGS += $(shell pkg-config --cflags libidn2)
 curl: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other libidn2)
 curl: export LIBS += $(shell pkg-config --static --libs-only-l libidn2)
 curl:
@@ -337,7 +396,7 @@ tiff:
 .PHONY: libwebp
 libwebp: ver = 1.3.0
 libwebp: cfg = $(AUTOFLAGS)
-libwebp: export CPPFLAGS += $(shell pkg-config --cflags-only-I libpng)
+libwebp: export CPPFLAGS += $(shell pkg-config --cflags libpng)
 libwebp: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other libpng)
 libwebp: export LIBS += $(shell pkg-config --static --libs-only-l libpng)
 libwebp:
@@ -381,9 +440,9 @@ freetype:
 .PHONY: harfbuzz
 harfbuzz: ver = 6.0.0
 harfbuzz: cfg = $(AUTOFLAGS_MESON)
-harfbuzz: export CPPFLAGS += $(shell pkg-config --cflags-only-I cairo)
-harfbuzz: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other cairo)
-harfbuzz: export LIBS += $(shell pkg-config --static --libs-only-l cairo)
+harfbuzz: export CPPFLAGS += $(shell pkg-config --silence-errors --cflags cairo)
+harfbuzz: export LDFLAGS += $(shell pkg-config --silence-errors --static --libs-only-L --libs-only-other cairo)
+harfbuzz: export LIBS += $(shell pkg-config --silence-errors --static --libs-only-l cairo)
 harfbuzz:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
@@ -418,7 +477,7 @@ cairo:
 .PHONY: pango
 pango: ver = 1.50.12
 pango: cfg = $(AUTOFLAGS_MESON)
-pango: export CPPFLAGS += $(shell pkg-config --cflags-only-I cairo)
+pango: export CPPFLAGS += $(shell pkg-config --cflags cairo)
 pango: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other cairo)
 pango: export LIBS += $(shell pkg-config --static --libs-only-l cairo)
 pango:
@@ -429,7 +488,7 @@ pango:
 .PHONY: ghostscript
 ghostscript: ver = 10.0.0
 ghostscript: cfg = $(AUTOFLAGS) --x-includes=/opt/X11/include --x-libraries=/opt/X11/lib
-ghostscript: export CPPFLAGS += $(shell pkg-config --static --cflags-only-I fontconfig)
+ghostscript: export CPPFLAGS += $(shell pkg-config --static --cflags fontconfig)
 ghostscript: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other fontconfig)
 ghostscript: export LIBS += $(shell pkg-config --static --libs-only-l fontconfig)
 ghostscript:

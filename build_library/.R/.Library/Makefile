@@ -35,6 +35,25 @@ export PKG_CONFIG_PATH
 all:
 	# do nothing
 
+.PHONY: toutes
+toutes:
+	$(MAKE) boost
+	$(MAKE) szip
+	$(MAKE) hdf
+	$(MAKE) hdf5
+	$(MAKE) netcdf
+	$(MAKE) proj
+	$(MAKE) libgeotiff
+	$(MAKE) geos
+	$(MAKE) openjpeg
+	$(MAKE) poppler
+	$(MAKE) postgresql
+	$(MAKE) unixODBC
+	$(MAKE) gdal
+	$(MAKE) fftw
+	$(MAKE) nlopt
+	$(MAKE) udunits
+	$(MAKE) zeromq
 
 .PHONY: boost
 boost: ver = 1_81_0
@@ -71,7 +90,7 @@ hdf5:
 .PHONY: netcdf
 netcdf: ver = c-4.9.0
 netcdf: cfg = $(AUTOFLAGS) --enable-netcdf-4
-netcdf: export CPPFLAGS += $(shell pkg-config --cflags-only-I libxml-2.0)
+netcdf: export CPPFLAGS += $(shell pkg-config --cflags libxml-2.0)
 netcdf: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other libxml-2.0)
 netcdf: export LIBS += $(shell pkg-config --static --libs-only-l libxml-2.0) -lsz -lhdf5
 netcdf:
@@ -82,7 +101,7 @@ netcdf:
 .PHONY: proj
 proj: ver = 9.1.1
 proj: cfg = $(AUTOFLAGS_CMAKE)
-proj: export CPPFLAGS += $(shell pkg-config --cflags-only-I libcurl libtiff-4)
+proj: export CPPFLAGS += $(shell pkg-config --cflags libcurl libtiff-4)
 proj: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other libcurl libtiff-4)
 proj: export LIBS += $(shell pkg-config --static --libs-only-l libcurl libtiff-4)
 proj:
@@ -93,7 +112,7 @@ proj:
 .PHONY: libgeotiff
 libgeotiff: ver = 1.7.1
 libgeotiff: cfg = $(AUTOFLAGS) --with-jpeg --with-zlib --with-proj
-libgeotiff: export CPPFLAGS += $(shell pkg-config --cflags-only-I proj)
+libgeotiff: export CPPFLAGS += $(shell pkg-config --cflags proj)
 libgeotiff: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other proj)
 libgeotiff: export LIBS += $(shell pkg-config --static --libs-only-l proj)
 libgeotiff:
@@ -113,7 +132,7 @@ geos:
 .PHONY: openjpeg
 openjpeg: ver = 2.5.0
 openjpeg: cfg = $(AUTOFLAGS_CMAKE)
-openjpeg: export CPPFLAGS += $(shell pkg-config --cflags-only-I libtiff-4)
+openjpeg: export CPPFLAGS += $(shell pkg-config --cflags libtiff-4)
 openjpeg: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other libtiff-4)
 openjpeg: export LIBS += $(shell pkg-config --static --libs-only-l libtiff-4)
 openjpeg:
@@ -124,7 +143,7 @@ openjpeg:
 .PHONY: poppler
 poppler: ver = 23.02.0
 poppler: cfg = $(AUTOFLAGS_CMAKE) -DENABLE_UNSTABLE_API_ABI_HEADERS:BOOL=On
-poppler: export CPPFLAGS += $(shell pkg-config --cflags-only-I libcurl libtiff-4 cairo)
+poppler: export CPPFLAGS += $(shell pkg-config --cflags libcurl libtiff-4 cairo)
 poppler: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other libcurl libtiff-4 cairo)
 poppler: export LIBS += $(shell pkg-config --static --libs-only-l libcurl libtiff-4 cairo)
 poppler:
@@ -151,7 +170,7 @@ unixODBC:
 .PHONY: gdal
 gdal: ver = 3.5.3
 gdal: cfg = $(AUTOFLAGS) --with-liblzma --with-poppler
-gdal: export CPPFLAGS += $(shell pkg-config --cflags-only-I libtiff-4 fontconfig proj)
+gdal: export CPPFLAGS += $(shell pkg-config --cflags libtiff-4 fontconfig proj)
 gdal: export LDFLAGS += $(shell pkg-config --static --libs-only-L --libs-only-other libtiff-4 fontconfig proj)
 gdal: export LIBS += $(shell pkg-config --static --libs-only-l libtiff-4 fontconfig proj)
 gdal:
