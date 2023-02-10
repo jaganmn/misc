@@ -4,7 +4,7 @@ AUTOFLAGS = --prefix=$(PREFIX) --with-pic --enable-static --disable-shared
 
 AUTOFLAGS_MESON = --prefix $(PREFIX) --buildtype release --default-library static -Dc_args="$(CPPFLAGS) $(CFLAGS)" -Dcpp_args="$(CPPFLAGS) $(CXXFLAGS)" -Dc_link_args="$(LDFLAGS) $(LIBS)" -Dcpp_link_args="$(LDFLAGS) $(LIBS)"
 
-AUTOFLAGS_CMAKE = -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=On -DBUILD_SHARED_LIBS:BOOL=Off -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="$(CPPFLAGS) $(CFLAGS)" -DCMAKE_CXX_FLAGS="$(CPPFLAGS) $(CXXFLAGS)" -DCMAKE_EXE_LINKER_FLAGS="$(LDFLAGS) $(LIBS)" -DCMAKE_MACOSX_RPATH=True -DCMAKE_INSTALL_RPATH=$(PREFIX)/lib -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+AUTOFLAGS_CMAKE = -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_INSTALL_NAME_DIR=$(PREFIX)/lib -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="$(CPPFLAGS) $(CFLAGS)" -DCMAKE_CXX_FLAGS="$(CPPFLAGS) $(CXXFLAGS)" -DCMAKE_EXE_LINKER_FLAGS="$(LDFLAGS) $(LIBS)" -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
 
 CC = clang
 
@@ -59,11 +59,13 @@ toutes:
 	$(MAKE) isl
 	$(MAKE) gsl
 	$(MAKE) glpk
+	$(MAKE) libdeflate
 	$(MAKE) zlib
 	$(MAKE) pcre2
 	$(MAKE) libidn2
 	$(MAKE) openssl
 	$(MAKE) wget
+	$(MAKE) brotli
 	$(MAKE) lz4
 	$(MAKE) xz
 	$(MAKE) zstd
@@ -249,7 +251,6 @@ libdeflate:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
 	cd $@-$(ver) && mkdir _build && cd _build && cmake .. $(cfg) && $(MAKE) && $(MAKE) install
-# FIXME: rpath problems
 
 .PHONY: zlib
 zlib: ver = 1.2.13
@@ -303,7 +304,6 @@ brotli:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
 	cd $@-$(ver) && mkdir _build && cd _build && cmake .. $(cfg) && $(MAKE) && $(MAKE) install
-# FIXME: rpath problems
 
 .PHONY: lz4
 lz4: ver = 1.9.4

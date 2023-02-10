@@ -4,7 +4,7 @@ AUTOFLAGS = --prefix=$(PREFIX) --with-pic --enable-static --disable-shared
 
 AUTOFLAGS_MESON = --prefix $(PREFIX) --buildtype release --default-library static -Dc_args="$(CPPFLAGS) $(CFLAGS)" -Dcpp_args="$(CPPFLAGS) $(CXXFLAGS)" -Dc_link_args="$(LDFLAGS) $(LIBS)" -Dcpp_link_args="$(LDFLAGS) $(LIBS)"
 
-AUTOFLAGS_CMAKE = -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_POSITION_INDEPENDENT_CODE:BOOL=On -DBUILD_SHARED_LIBS:BOOL=Off -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="$(CPPFLAGS) $(CFLAGS)" -DCMAKE_CXX_FLAGS="$(CPPFLAGS) $(CXXFLAGS)" -DCMAKE_EXE_LINKER_FLAGS="$(LDFLAGS) $(LIBS)" -DCMAKE_MACOSX_RPATH=True -DCMAKE_INSTALL_RPATH=$(PREFIX)/lib -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
+AUTOFLAGS_CMAKE = -DCMAKE_INSTALL_PREFIX=$(PREFIX) -DCMAKE_INSTALL_NAME_DIR=$(PREFIX)/lib -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DBUILD_SHARED_LIBS=OFF -DCMAKE_BUILD_TYPE=Release -DCMAKE_C_FLAGS="$(CPPFLAGS) $(CFLAGS)" -DCMAKE_CXX_FLAGS="$(CPPFLAGS) $(CXXFLAGS)" -DCMAKE_EXE_LINKER_FLAGS="$(LDFLAGS) $(LIBS)" -DCMAKE_OSX_DEPLOYMENT_TARGET=11.0
 
 CC = clang
 
@@ -21,6 +21,7 @@ LDFLAGS = -L$(PREFIX)/lib -L/usr/local/include -framework CoreFoundation -framew
 LIBS =
 
 PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
+
 
 export CC
 export CXX
@@ -54,6 +55,15 @@ toutes:
 	$(MAKE) nlopt
 	$(MAKE) udunits
 	$(MAKE) zeromq
+
+.PHONY: apache-arrow
+apache-arrow: ver = 11.0.0
+apache-arrow: cfg = $(AUTOFLAGS_CMAKE) -DARROW_INSTALL_NAME_RPATH=OFF
+apache-arrow:
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver)/cpp && mkdir _build && cd _build && cmake .. $(cfg) && $(MAKE) && $(MAKE) install
+# FIXME: seems to need shared openssl
 
 .PHONY: boost
 boost: ver = 1_81_0
@@ -157,7 +167,7 @@ postgresql: cfg = $(AUTOFLAGS)
 postgresql:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
-	cd $@-$(ver) && $(env) ./configure && $(MAKE) MAKELEVEL=0 && $(MAKE) install
+	cd $@-$(ver) && ./configure && $(MAKE) MAKELEVEL=0 && $(MAKE) install
 
 .PHONY: unixODBC
 unixODBC: ver = 2.3.11
@@ -176,7 +186,7 @@ gdal: export LIBS += $(shell pkg-config --static --libs-only-l libtiff-4 fontcon
 gdal:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
-	cd $@-$(ver) && $(env) ./configure $(cfg) && $(MAKE) && $(MAKE) install
+	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
 
 .PHONY: fftw
 fftw: ver = 3.3.10
@@ -189,26 +199,63 @@ fftw:
 .PHONY: nlopt
 nlopt: ver = 2.7.1
 nlopt: cfg = $(AUTOFLAGS_CMAKE)
-nlopt: env =
 nlopt:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
-	cd $@-$(ver) && mkdir _build && cd _build && $(env) cmake .. $(cfg) && $(MAKE) && $(MAKE) install
+	cd $@-$(ver) && mkdir _build && cd _build && cmake .. $(cfg) && $(MAKE) && $(MAKE) install
 
 .PHONY: udunits
 udunits: ver = 2.2.28
 udunits: cfg = $(AUTOFLAGS)
-udunits: env =
 udunits:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
-	cd $@-$(ver) && $(env) ./configure $(cfg) && $(MAKE) && $(MAKE) install
+	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
 
 .PHONY: zeromq
 zeromq: ver = 4.3.4
 zeromq: cfg = $(AUTOFLAGS)
-zeromq: env =
 zeromq:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
-	cd $@-$(ver) && $(env) ./configure $(cfg) && $(MAKE) && $(MAKE) install
+	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
+
+.PHONY: CoinUtils
+CoinUtils: ver = releases-2.11.6
+CoinUtils: cfg = $(AUTOFLAGS)
+CoinUtils: 
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
+
+.PHONY: Osi
+Osi: ver = releases-0.108.7
+Osi: cfg = $(AUTOFLAGS)
+Osi: 
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
+
+.PHONY: Clp
+Clp: ver = releases-1.17.7
+Clp: cfg = $(AUTOFLAGS)
+Clp: 
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
+
+.PHONY: Cgl
+Cgl: ver = releases-0.60.6
+Cgl: cfg = $(AUTOFLAGS)
+Cgl: 
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
+
+.PHONY: SYMPHONY
+SYMPHONY: ver = releases-5.6.19
+SYMPHONY: cfg = $(AUTOFLAGS)
+SYMPHONY: 
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
