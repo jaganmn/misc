@@ -53,7 +53,7 @@ OBJC=${CC}
 ## and '-g' in all other cases except icc (for which see R-admin.html).
 ## Be wary of aggressive settings such as -ffast-math, -Ofast and
 ## -Werror (which is likely to cause configure to fail).
-CFLAGS="-g -O2 -Wall -pedantic -mmacosx-version-min=11.0 -arch arm64 -falign-functions=8 -Wno-error=implicit-function-declaration"
+CFLAGS="-Wall -g -O2 -pedantic -mmacosx-version-min=11.0 -arch arm64 -falign-functions=64 -Wno-error=implicit-function-declaration"
 
 ## Defines for C compilation.
 ## Use this to specify defines to be used in the compilation of R,
@@ -74,11 +74,11 @@ CPPFLAGS="-I/opt/R/arm64/include -I/usr/local/include"
 
 ## The command which runs the Fortran compiler.
 ## Used for both fixed-form and free-form Fortran
-FC="/opt/R/arm64/gfortran/bin/gfortran -mtune=native"
+FC=/opt/R/arm64/gfortran/bin/gfortran
 
 ## Options for the Fortran compiler.
 ## Use this to specify comilation flags for fixed-form Fortran.
-FFLAGS="-g -O2 -Wall -pedantic -mmacosx-version-min=11.0"
+FFLAGS="-Wall -g -O2 -pedantic -mmacosx-version-min=11.0 -mtune=native"
 ## Ditto for free-form Fortran.
 ## FCFLAGS=
 ## If just one of these is set, it is used for both.
@@ -172,7 +172,7 @@ LDFLAGS="-L/opt/R/arm64/lib -L/usr/local/lib"
 CXX=clang++
 
 ## Options for the C++ compiler.
-CXXFLAGS="-g -O2 -Wall -pedantic -mmacosx-version-min=11.0 -arch arm64 -falign-functions=8"
+CXXFLAGS="-Wall -g -O2 -pedantic -mmacosx-version-min=11.0 -arch arm64 -falign-functions=64"
 
 ## Any special flags which must be used when compiling C++ code to be
 ## turned into a shared object.  If this variable is left unspecified
