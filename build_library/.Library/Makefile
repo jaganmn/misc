@@ -262,7 +262,7 @@ zlib:
 
 .PHONY: pcre2
 pcre2: ver = 10.42
-pcre2: cfg = $(AUTOFLAGS)
+pcre2: cfg = $(AUTOFLAGS) --disable-jit
 pcre2:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
