@@ -20,7 +20,7 @@ LDFLAGS = -L$(PREFIX)/lib -framework CoreFoundation -framework SystemConfigurati
 
 LIBS =
 
-PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig:/usr/lib/pkgconfig
+PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig:$(PREFIX)/share/pkgconfig:/usr/lib/pkgconfig
 
 
 export CC

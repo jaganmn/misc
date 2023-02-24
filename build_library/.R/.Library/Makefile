@@ -20,7 +20,7 @@ LDFLAGS = -L$(PREFIX)/lib -L/usr/local/include -framework CoreFoundation -framew
 
 LIBS =
 
-PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig
+PKG_CONFIG_PATH = $(PREFIX)/lib/pkgconfig:$(PREFIX)/share/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig:/usr/lib/pkgconfig
 
 
 export CC
@@ -48,6 +48,7 @@ toutes:
 	$(MAKE) geos
 	$(MAKE) openjpeg
 	$(MAKE) poppler
+	$(MAKE) poppler-data
 	$(MAKE) postgresql
 	$(MAKE) unixODBC
 	$(MAKE) gdal
@@ -160,6 +161,14 @@ poppler:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
 	cd $@-$(ver) && mkdir _build && cd _build && cmake .. $(cfg) && $(MAKE) && $(MAKE) install
+
+.PHONY: poppler-data
+poppler-data: ver = 0.4.12
+poppler-data: cfg =
+poppler-data:
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver) && $(MAKE) install prefix=$(PREFIX)
 
 .PHONY: postgresql
 postgresql: ver = 15.1
