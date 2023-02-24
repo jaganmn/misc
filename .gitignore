@@ -8,8 +8,4 @@
 *.png
 *.o
 *.so
-
-R_install
-!R_install/README.md
-!R_install/Makefile
-!R_install/config.site
+*~
