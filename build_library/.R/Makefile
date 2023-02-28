@@ -17,18 +17,13 @@ configure :
 	cp config.site $(BUILDDIR)
 	cd $(BUILDDIR) && ../$(SRCDIR)/configure \
 		--enable-R-shlib \
-		--enable-lto \
 		--enable-memory-profiling \
-		--with-recommended-packages \
-		--disable-java \
-		--build=aarch64-apple-darwin20 \
+		--enable-lto \
+		--with-blas="-framework Accelerate" \
 		--x-includes=/opt/X11/include \
 		--x-libraries=/opt/X11/lib \
-		--with-blas="-framework Accelerate" \
 		--with-tcl-config=/opt/R/arm64/lib/tclConfig.sh \
-		--with-tk-config=/opt/R/arm64/lib/tkConfig.sh \
-		PKG_CONFIG=/usr/local/bin/pkg-config \
-		PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig
+		--with-tk-config=/opt/R/arm64/lib/tkConfig.sh
 	cp $(BUILDDIR)/config.log .
 
 build:

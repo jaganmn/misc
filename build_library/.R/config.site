@@ -338,9 +338,9 @@ R_LD_LIBRARY_PATH=/opt/R/arm64/lib:/usr/local/lib
 
 ## Path to the version of pkg-config to be used for locating cairographics,
 ## and possibly jpeg, libpng and libtiff.
-PKG_CONFIG=/usr/local/bin/pkg-config
+PKG_CONFIG=/opt/R/arm64/bin/pkg-config
 ## search path for pkg-config
-PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/usr/local/lib/pkgconfig:/usr/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig
+PKG_CONFIG_PATH=/opt/R/arm64/lib/pkgconfig:/opt/R/arm64/share/pkgconfig:/usr/local/lib/pkgconfig:/usr/local/share/pkgconfig:/usr/lib/pkgconfig:/opt/X11/lib/pkgconfig:/opt/X11/share/pkgconfig
 ## path overriding pkg-config's default search path
 ## PKG_CONFIG_LIBDIR=
 
