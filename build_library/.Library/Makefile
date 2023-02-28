@@ -39,6 +39,10 @@ all:
 
 .PHONY: toutes
 toutes:
+	$(MAKE) JAGS
+	$(MAKE) MacTeX
+	$(MAKE) XQuartz
+	$(MAKE) pandoc
 	$(MAKE) pkg-config
 	$(MAKE) make
 	$(MAKE) libiconv
@@ -66,6 +70,7 @@ toutes:
 	$(MAKE) openssl
 	$(MAKE) wget
 	$(MAKE) brotli
+	$(MAKE) bzip2
 	$(MAKE) lz4
 	$(MAKE) xz
 	$(MAKE) zstd
@@ -96,6 +101,27 @@ toutes:
 	$(MAKE) apr-util
 	$(MAKE) serf
 	$(MAKE) subversion
+	$(MAKE) tidy-html5
+
+.PHONY: JAGS
+JAGS: ver = 4.3.1
+JAGS:
+	installer -pkg $@-$(ver).pkg -target /
+
+.PHONY: MacTeX
+MacTeX: ver =
+MacTeX:
+	installer -pkg $@.pkg -target /
+
+.PHONY: XQuartz
+XQuartz: ver = 2.8.5
+XQuartz:
+	installer -pkg $@-$(ver).pkg -target /
+
+.PHONY: pandoc
+pandoc: ver = 3.0.1
+pandoc:
+	installer -pkg $@-$(ver)-macOS.pkg -target /
 
 .PHONY: pkg-config
 pkg-config: ver = 0.29.2
@@ -304,6 +330,14 @@ brotli:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
 	cd $@-$(ver) && mkdir _build && cd _build && cmake .. $(cfg) && $(MAKE) && $(MAKE) install
+
+.PHONY: bzip2
+bzip2: ver = 1.0.8
+bzip2: cfg =
+bzip2:
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver) && $(MAKE) && $(MAKE) install prefix=$(PREFIX)
 
 .PHONY: lz4
 lz4: ver = 1.9.4
@@ -546,3 +580,11 @@ subversion:
 	rm -rf $@-$(ver)
 	tar -xvf $@-$(ver).tar.*
 	cd $@-$(ver) && ./configure $(cfg) && $(MAKE) && $(MAKE) install
+
+.PHONY: tidy-html5
+tidy-html5: ver = 5.8.0
+tidy-html5: cfg = $(AUTOFLAGS_CMAKE)
+tidy-html5:
+	rm -rf $@-$(ver)
+	tar -xvf $@-$(ver).tar.*
+	cd $@-$(ver) && mkdir _build && cd _build && cmake .. $(cfg) && $(MAKE) && $(MAKE) install
