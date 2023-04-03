@@ -8,8 +8,7 @@ options(browserNLdisabled = TRUE,
         editor = "/opt/R/arm64/bin/emacs",
         menu.graphics = FALSE,
         repos =
-            local(
-            {
+            local({
                 r <- getOption("repos")
                 r["CRAN"] <- "https://cloud.r-project.org/"
                 r["BioCsoft"] <- "%bm/packages/%v/bioc"

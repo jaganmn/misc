@@ -31,7 +31,6 @@
                       (lambda ()
                         (ess-nuke-trailing-whitespace)))))
 (setq ess-nuke-trailing-whitespace-p t)
-(ess-toggle-underscore nil)
 
 ;;; Perl
 (add-hook 'perl-mode-hook
