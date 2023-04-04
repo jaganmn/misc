@@ -1,5 +1,10 @@
 alias sudo="sudo "
+
+if ls --group-directories-first &> /dev/null; then
 alias ls="ls -AFbh --color=auto --group-directories-first"
+else
+alias ls="ls -AFGbh"
+fi
 
 alias R="R --quiet --no-save --no-restore"
 alias R-devel="/Users/mikael/Desktop/R-setup/R-devel-build/bin/R --quiet --no-save --no-restore"
