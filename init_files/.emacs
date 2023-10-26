@@ -1,11 +1,12 @@
 (setq-default major-mode 'text-mode)
-(setq inhibit-startup-screen t)
-(setq column-number-mode t)
-(setq show-paren-mode t)
-(setq require-final-newline t)
-(setq save-abbrevs nil)
-(setq show-paren-style 'parenthesis) ; otherwise 'expression
-(setq font-latex-fontify-script nil)
+(setq-default tab-width 4)
+(setq-default inhibit-startup-screen t)
+(setq-default column-number-mode t)
+(setq-default show-paren-mode t)
+(setq-default require-final-newline t)
+(setq-default save-abbrevs nil)
+(setq-default show-paren-style 'parenthesis) ; otherwise 'expression
+(setq-default font-latex-fontify-script nil)
 
 (add-to-list 'default-frame-alist '(width  . 80))
 (add-to-list 'default-frame-alist '(height . 40))
@@ -30,11 +31,11 @@
             (add-hook 'local-write-file-hooks
                       (lambda ()
                         (ess-nuke-trailing-whitespace)))))
-(setq ess-nuke-trailing-whitespace-p t)
+(setq-default ess-nuke-trailing-whitespace-p t)
 
 ;;; Perl
 (add-hook 'perl-mode-hook
           (lambda () (setq perl-indent-level 4)))
 
-(setq c-default-style "bsd")
-(setq c-basic-offset 4)
+(setq-default c-default-style "bsd")
+(setq-default c-basic-offset 4)
