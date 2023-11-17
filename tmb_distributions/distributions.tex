@@ -21,7 +21,7 @@ with unit diagonal elements (i.e., an $n \times n$ correlation matrix).
 \subsection{Lewandowski-Kurowicka-Joe (LKJ) distribution}
 
 If $X$ follows an
-\href{https://mc-stan.org/docs/2_27/functions-reference/lkj-correlation.html}{LKJ distribution}
+\href{https://mc-stan.org/docs/functions-reference/lkj-correlation.html}{LKJ distribution}
 with shape $\eta > 0$,
 \begin{equation}
 X \sim \mathrm{LKJ}(\eta)\,,
@@ -79,7 +79,7 @@ Let $X$ and $S$ be $n \times n$ real symmetric positive definite matrices
 \subsection{Wishart distribution}
 
 If $X$ follows a
-\href{https://mc-stan.org/docs/2_27/functions-reference/wishart-distribution.html}{Wishart distribution}
+\href{https://mc-stan.org/docs/functions-reference/wishart-distribution.html}{Wishart distribution}
 with degrees of freedom $\nu$ and scale $S$,
 \begin{equation}
 X \sim \mathrm{Wishart}(\nu,S)\,,
@@ -98,7 +98,7 @@ given by
 \subsection{Inverse Wishart distribution}
 
 If $X$ follows an
-\href{https://mc-stan.org/docs/2_27/functions-reference/inverse-wishart-distribution.html}{inverse Wishart distribution}
+\href{https://mc-stan.org/docs/functions-reference/inverse-wishart-distribution.html}{inverse Wishart distribution}
 with degrees of freedom $\nu$ and scale $S$,
 \begin{equation}
 X \sim \mathrm{InverseWishart}(\nu,S)\,,
@@ -146,7 +146,8 @@ $\tr(S^{-1} X)$ is computed by noting that
 \begin{equation}
 \tr(A B) = \sum_{i,j} (A \odot \transpose{B})_{i,j} = \sum_{i,j} (\transpose{A} \odot B)_{i,j}\,,
 \end{equation}
-where $\odot$ denotes elementwise multiplication. Then
+where $\odot$ denotes elementwise multiplication.
+Then
 \begin{equation}
 \begin{aligned}
 \tr(S^{-1} X)

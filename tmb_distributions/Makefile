@@ -1,7 +1,10 @@
-all: README.html distributions.Rout distributions.pdf
+output = README.html distributions.Rout distributions.pdf
+
+.PHONY: all
+all: $(output)
 
 %.html: %.md
-	pandoc $< -s -o $@ 
+	pandoc --shift-heading-level-by=-1 $< -s -o $@
 
 %.Rout: %.R %.cpp %.h
 	R CMD BATCH --vanilla $<
@@ -12,7 +15,8 @@ all: README.html distributions.Rout distributions.pdf
 
 .PHONY: clean
 clean:
-	rm -f *.{o,so,aux,log,out} *~
+	rm -f *.{o,so,aux,log,out}
 
-new: clean
-	rm -f *.{Rout,pdf,html}
+.PHONY: distclean
+distclean: clean
+	rm -f $(output)
