@@ -6,7 +6,7 @@ all: $(output)
 %.html: %.md
 	pandoc --shift-heading-level-by=-1 $< -s -o $@
 
-%.Rout: %.R %.cpp %.h
+%.Rout: %.R %.cpp %.hpp
 	R CMD BATCH --vanilla $<
 
 %.pdf: %.tex

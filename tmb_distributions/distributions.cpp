@@ -1,5 +1,5 @@
 #include <TMB.hpp>
-#include "distributions.h"
+#include "distributions.hpp"
 
 enum test
 {
