@@ -1,6 +1,7 @@
 # TMB implementations of LKJ, Wishart, and inverse Wishart distributions
 
-`distributions.h` is a header file implementing four functions:
+[distributions.hpp](distributions.hpp) is a header file implementing
+four functions:
 
 ```cpp
 Type mvlgamma(Type x, int p = 1)
@@ -38,10 +39,10 @@ and `tail(x, n*(n-1)/2)` must specify `cov2cor(X)`
 `scale` specifies the `n`-by-`n` scale matrix `S` in the same way that
 `x` specifies `X`.
 
-Computational details can be found in `distributions.tex`.
+Computational details can be found in [distributions.tex](distributions.tex).
 
 Tests for agreement between the C++ functions and independently implemented
-R functions can be found in `distributions.R`.  The script compiles function
-template `distributions.cpp`.  The compiled function passes `DATA_*` objects
-from R as arguments to the C++ functions and `REPORT`s results back to R for
-validation.
+R functions can be found in [distributions.R](distributions.R).
+The script compiles function template [distributions.cpp](distributions.cpp).
+The compiled function passes `DATA_*` objects from R as arguments to the C++
+functions and `REPORT`s results back to R for validation.
