@@ -1,3 +1,4 @@
+set.seed(0)
 m <- 20L
 n <- 6L
 X <- matrix(runif(m * n), m, n)
