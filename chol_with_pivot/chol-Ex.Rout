@@ -1,0 +1,135 @@
+
+R version 4.3.2 Patched (2023-12-19 r85710) -- "Eye Holes"
+Copyright (C) 2023 The R Foundation for Statistical Computing
+Platform: aarch64-apple-darwin22.6.0 (64-bit)
+
+R is free software and comes with ABSOLUTELY NO WARRANTY.
+You are welcome to redistribute it under certain conditions.
+Type 'license()' or 'licence()' for distribution details.
+
+  Natural language support but running in an English locale
+
+R is a collaborative project with many contributors.
+Type 'contributors()' for more information and
+'citation()' on how to cite R or R packages in publications.
+
+Type 'demo()' for some demos, 'help()' for on-line help, or
+'help.start()' for an HTML browser interface to help.
+Type 'q()' to quit R.
+
+> ## Bug 15853: https://bugs.r-project.org/show_bug.cgi?id=15853
+> 
+> set.seed(0)
+> m <- 20L
+> n <- 6L
+> X <- matrix(runif(m * n), m, n)
+> X[, 5L] <- X[, 4L]
+> X[, 1L] <- X[, 3L] + X[, 4L]
+> 
+> 
+> ## Example 1: near-positive semidefinite with small negative minimum eigenvalue
+> 
+> (A1 <- crossprod(X))
+         [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
+[1,] 24.38501 10.924049 11.847004 12.538007 12.538007 10.747373
+[2,] 10.92405  6.370394  5.225453  5.698596  5.698596  5.101149
+[3,] 11.84700  5.225453  6.372565  5.474439  5.474439  5.547384
+[4,] 12.53801  5.698596  5.474439  7.063567  7.063567  5.199989
+[5,] 12.53801  5.698596  5.474439  7.063567  7.063567  5.199989
+[6,] 10.74737  5.101149  5.547384  5.199989  5.199989  6.428194
+> e1 <- eigen(A1, symmetric = TRUE)
+> (l1 <- min(e1[["values"]]))
+[1] -4.999546e-15
+> stopifnot(l1 < 0) # true for MJ, but perhaps not guaranteed ...
+> 
+> (R1 <- chol(A1, pivot = TRUE))
+         [,1]     [,2]      [,3]       [,4]          [,5]       [,6]
+[1,] 4.938118 2.176411 2.2121886  2.3990929  2.539025e+00  2.5390253
+[2,] 0.000000 1.300550 0.2203056  0.2506419 -2.506419e-01 -0.2506419
+[3,] 0.000000 0.000000 1.1950233 -0.1146514  1.146514e-01  0.1146514
+[4,] 0.000000 0.000000 0.0000000  0.7354943 -7.354943e-01 -0.7354943
+[5,] 0.000000 0.000000 0.0000000  0.0000000 -1.687539e-14  7.0635675
+[6,] 0.000000 0.000000 0.0000000  0.0000000  0.000000e+00  7.0635675
+attr(,"pivot")
+[1] 1 6 2 3 5 4
+attr(,"rank")
+[1] 4
+Warning message:
+In chol.default(A1, pivot = TRUE) :
+  the matrix is either rank-deficient or not positive definite
+> p1 <- attr(R1, "pivot")
+> r1 <- attr(R1, "rank")
+> stopifnot(r1 < n)
+> 
+> ## The last computed pivot
+> R1[r1 + 1L, r1 + 1L]
+[1] -1.687539e-14
+> ## How it was computed by dpstrf
+> A1[p1, p1][r1 + 1L, r1 + 1L] - sum(crossprod(R1[1L:r1, r1 + 1L]))
+[1] -1.687539e-14
+> 
+> ## Zero the trailing submatrix
+> R1. <- R1
+> R1.[(r1 + 1L):n, (r1 + 1L):n] <- 0
+> 
+> ## Relative backwards errors
+> norm(A1[p1, p1] - crossprod(R1 )) / norm(A1)
+[1] 1.202562
+> norm(A1[p1, p1] - crossprod(R1.)) / norm(A1)
+[1] 4.281438e-16
+> 
+> 
+> ## Example 2: near-positive semidefinite with small positive minimum eigenvalue
+> 
+> (A2 <- tcrossprod(e1[["vectors"]] * rep(sqrt(pmax(e1[["values"]], 4e-15)), each = n)))
+         [,1]      [,2]      [,3]      [,4]      [,5]      [,6]
+[1,] 24.38501 10.924049 11.847004 12.538007 12.538007 10.747373
+[2,] 10.92405  6.370394  5.225453  5.698596  5.698596  5.101149
+[3,] 11.84700  5.225453  6.372565  5.474439  5.474439  5.547384
+[4,] 12.53801  5.698596  5.474439  7.063567  7.063567  5.199989
+[5,] 12.53801  5.698596  5.474439  7.063567  7.063567  5.199989
+[6,] 10.74737  5.101149  5.547384  5.199989  5.199989  6.428194
+> e2 <- eigen(A2, symmetric = TRUE)
+> (l2 <- min(e2[["values"]]))
+[1] 9.962262e-16
+> stopifnot(l2 > 0)
+> 
+> (R2 <- chol(A2, pivot = TRUE))
+         [,1]     [,2]      [,3]       [,4]          [,5]          [,6]
+[1,] 4.938118 2.176411 2.2121886  2.3990929  2.539025e+00  2.539025e+00
+[2,] 0.000000 1.300550 0.2203056  0.2506419 -2.506419e-01 -2.506419e-01
+[3,] 0.000000 0.000000 1.1950233 -0.1146514  1.146514e-01  1.146514e-01
+[4,] 0.000000 0.000000 0.0000000  0.7354943 -7.354943e-01 -7.354943e-01
+[5,] 0.000000 0.000000 0.0000000  0.0000000  1.397853e-07  7.624652e-08
+[6,] 0.000000 0.000000 0.0000000  0.0000000  0.000000e+00  6.217249e-15
+attr(,"pivot")
+[1] 1 6 2 3 4 5
+attr(,"rank")
+[1] 5
+Warning message:
+In chol.default(A2, pivot = TRUE) :
+  the matrix is either rank-deficient or not positive definite
+> p2 <- attr(R2, "pivot")
+> r2 <- attr(R2, "rank")
+> stopifnot(r2 < n)
+> 
+> ## The last computed pivot
+> R2[r2 + 1L, r2 + 1L]
+[1] 6.217249e-15
+> ## How it was computed by dpstrf
+> A2[p2, p2][r2 + 1L, r2 + 1L] - sum(crossprod(R2[1L:r2, r2 + 1L]))
+[1] 6.217249e-15
+> 
+> ## Zero the trailing submatrix
+> R2. <- R2
+> R2.[(r2 + 1L):n, (r2 + 1L):n] <- 0
+> 
+> ## Relative backwards errors
+> norm(A2[p2, p2] - crossprod(R2 )) / norm(A2)
+[1] 7.492516e-17
+> norm(A2[p2, p2] - crossprod(R2.)) / norm(A2)
+[1] 7.492516e-17
+> 
+> proc.time()
+   user  system elapsed 
+  0.084   0.018   0.093 
