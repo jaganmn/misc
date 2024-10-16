@@ -1,4 +1,3 @@
-#include <TMB.hpp>
 #include "distributions.hpp"
 
 enum test
@@ -12,19 +11,19 @@ enum test
 template<class Type>
 Type objective_function<Type>::operator()()
 {
-	DATA_INTEGER(test_flag);
+	DATA_INTEGER(flag);
 
-	switch (test_flag)
+	switch (flag)
 	{
 	case mvlgamma:
 	{
 		DATA_VECTOR(x);
-		DATA_INTEGER(p);
-		int n = x.size();
-		vector<Type> res(n);
-		for (int i = 0; i < n; ++i)
+		DATA_INTEGER(n);
+		Eigen::Index len = x.size();
+		vector<Type> res(len);
+		for (Eigen::Index i = 0; i < len; ++i)
 		{
-			res(i) = distributions::mvlgamma(x(i), p);
+			res(i) = distributions::mvlgamma(x(i), n);
 		}
 		REPORT(res);
 		break;
@@ -32,29 +31,29 @@ Type objective_function<Type>::operator()()
 	case dlkj:
 	{
 		DATA_VECTOR(x);
-		DATA_SCALAR(eta);
+		DATA_SCALAR(shape);
 		DATA_INTEGER(give_log);
-		Type res = distributions::dlkj(x, eta, give_log);
+		Type res = distributions::dlkj(x, shape, give_log);
 		REPORT(res);
 		break;
 	}
 	case dwishart:
 	{
 		DATA_VECTOR(x);
-		DATA_SCALAR(df);
+		DATA_SCALAR(shape);
 		DATA_VECTOR(scale);
 		DATA_INTEGER(give_log);
-		Type res = distributions::dwishart(x, df, scale, give_log);
+		Type res = distributions::dwishart(x, shape, scale, give_log);
 		REPORT(res);
 		break;
 	}
 	case dinvwishart:
 	{
 		DATA_VECTOR(x);
-		DATA_SCALAR(df);
+		DATA_SCALAR(shape);
 		DATA_VECTOR(scale);
 		DATA_INTEGER(give_log);
-		Type res = distributions::dinvwishart(x, df, scale, give_log);
+		Type res = distributions::dinvwishart(x, shape, scale, give_log);
 		REPORT(res);
 		break;
 	}

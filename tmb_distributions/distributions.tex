@@ -13,6 +13,32 @@
 \setlength{\parskip}{5mm}
 \setlength{\parindent}{0mm}
 
+Let $S$ be an $n \times n$ real positive definite matrix.  Let $L$ be
+the unique unit lower triangular matrix satisfying $S = D L L' D$ for
+diagonal $D$.  Let $x$ be the vector of length $n (n + 1)/2$ containing
+$\{s_{ij}\}_{i \geq j}$ sorted in row major order.  Let $y = f(x)$ be
+the vector of length $n (n + 1)/2$ containing $\{l_{ij}\}_{i \geq j}$
+sorted in row major order, but with $\log(s_{ii})/2$ replacing $l_{ii}$.
+
+Adopting the notation
+$x_{ij} = s_{ij}$,
+$y_{ij} = \log(s_{ii}) / 2$ for $i = j$, and
+$y_{ij} = l_{ij}$ for $i > j$,
+we can write the absolute value of the Jacobian of $g = f^{-1}$ as
+\begin{equation}
+\begin{aligned}
+  &\big|\det(\partial g/\partial y)\big| \\
+&= \Big( \prod_{i=1}^{n} 2 \exp(2 y_{ii}) \Big) \Big( \prod_{i=1}^{n} \Big( 1 + \sum_{j=1}^{i-1} y_{ij}^{2} \Big)^{-(i+2)/2} \Big) \Big( \prod_{i=1}^{n} \exp(2 y_{ii})^{(n-1)/2} \Big( 1 + \sum_{j=1}^{i-1} y_{ij}^{2} \Big)^{-(n-i)/2} \Big) \\
+&= 2^{n} \exp\Big((n + 1) \sum_{i=1}^{n} y_{ii}\Big) \prod_{i=1}^{n} \Big( 1 + \sum_{j=1}^{i-1} y_{ij}^{2} \Big)^{-(n+2)/2}
+\end{aligned}
+\end{equation}
+and the logarithm as
+\begin{equation}
+\log\big|\det(\partial g/\partial y)\big| = n \log(2) + \frac{1}{2} (n + 1) \sum_{i=1}^{n} 2 y_{ii} - \frac{1}{2} (n + 2) \sum_{i=1}^{n} \log\Big( 1 + \sum_{j=1}^{n} y_{ij}^{2}\Big)\,.
+\end{equation}
+
+\newpage
+
 \section{Correlation matrix distributions}
 
 Let $X$ be an $n \times n$ real symmetric positive definite matrix
@@ -28,21 +54,17 @@ X \sim \mathrm{LKJ}(\eta)\,,
 \end{equation}
 then its probability density is
 \begin{equation}
-f(X;\eta) = g(\eta) \det(X)^{\eta - 1}\,,
+\begin{aligned}
+f(X; \eta)
+&= 2^{\sum_{j=1}^{n} (2 \eta - 2 + n - j) (n - j)} \det(X)^{\eta - 1} \prod_{j=1}^{n-1} B(\eta + (n - j - 1)/2, \eta + (n - j - 1)/2)^{n-j} \\
+&= 2^{n (n - 1) (\eta - 1 + (2 n - 1)/6)} \det(X)^{\eta - 1} \prod_{j=1}^{n-1} \frac{\Gamma(a(j))^{2 j}}{\Gamma(2 a(j))^{j}}
+\end{aligned}
 \end{equation}
-where $g(\eta)$ is a normalization constant.
-
-If $\eta = 1$, then the distribution is uniform on the space of
-$n \times n$ real symmetric positive definite matrices with unit
-diagonal elements.
-%
-If $\eta > 1$, then the density is an increasing function of $\det(X)$,
-attaining a maximum at $\det(X) = 1$ (i.e., at $X = I_n$)
-and approaching $0$ as $\det(X) \to 0$.
-%
-If $\eta < 1$, then the density is a decreasing function of $\det(X)$,
-attaining a minimum at $\det(X) = 1$
-and approaching $\infty$ as $\det(X) \to 0$.
+with logarithm
+\begin{equation}
+\log(f(X; \eta)) = n (n - 1) (\eta - 1 + (2 n - 1)/6) \log(2) + (\eta - 1) \log(\det(X)) + \sum_{j=1}^{n-1} (2 j \log(\Gamma(a(j))) - j \log(\Gamma(2 a(j))))
+\end{equation}
+where $a(j) = \eta - 1 + (j + 1)/2$.
 
 \subsection{Computation}
 
@@ -80,32 +102,40 @@ Let $X$ and $S$ be $n \times n$ real symmetric positive definite matrices
 
 If $X$ follows a
 \href{https://mc-stan.org/docs/functions-reference/wishart-distribution.html}{Wishart distribution}
-with degrees of freedom $\nu$ and scale $S$,
+with scale $S$ and degrees of freedom $\nu$,
 \begin{equation}
-X \sim \mathrm{Wishart}(\nu,S)\,,
+X \sim \mathrm{Wishart}(S, \nu)\,,
 \end{equation}
-then its probability density is
+then its probability density function is
 \begin{equation}
-f(X;\nu,S) = \frac{\det(S)^{-\nu / 2} \det(X)^{-(-\nu + n + 1) / 2}}{2^{n \nu / 2} \Gamma_{n}(\nu / 2)} \exp\Big(-\frac{1}{2} \tr(S^{-1} X)\Big)\,,
+f(X; S, \nu) = \frac{\det(S)^{-\nu/2} \det(X)^{-(-\nu + n + 1)/2}}{2^{n \nu/2} \Gamma_{n}(\nu/2)} \exp\Big(-\frac{1}{2} \tr(S^{-1} X)\Big)
+\end{equation}
+with logarithm
+\begin{equation}
+\log(f(X; S, \nu)) = -\frac{1}{2} (\nu \log(\det(S)) + (-\nu + n + 1) \log(\det(X)) + n \nu \log(2) + 2 \log(\Gamma_{n}(\nu/2)) + \tr(S^{-1} X))\,,
 \end{equation}
 where $\Gamma_{n}$ denotes the
 \href{https://en.wikipedia.org/wiki/Multivariate_gamma_function}{$n$-variate gamma function},
 given by
 \begin{equation}
-\Gamma_{n}(z) = \pi^{n (n - 1) / 4} \prod_{i=0}^{n-1} \Gamma\Big(z - \frac{i}{2}\Big)\,,\qquad \Re(z) > \frac{1}{2}(n - 1)\,.
+\Gamma_{n}(z) = \pi^{n (n - 1)/4} \prod_{i=0}^{n-1} \Gamma\Big(z - \frac{i}{2}\Big)\,,\qquad \Re(z) > \frac{1}{2}(n - 1)\,.
 \end{equation}
 
 \subsection{Inverse Wishart distribution}
 
 If $X$ follows an
 \href{https://mc-stan.org/docs/functions-reference/inverse-wishart-distribution.html}{inverse Wishart distribution}
-with degrees of freedom $\nu$ and scale $S$,
+with scale $S$ and degrees of freedom $\nu$,
 \begin{equation}
-X \sim \mathrm{InverseWishart}(\nu,S)\,,
+X \sim \mathrm{InverseWishart}(S, \nu)\,,
 \end{equation}
-then its probability density is
+then its probability density function is
 \begin{equation}
-f(X;\nu,S) = \frac{\det(S)^{\nu / 2} \det(X)^{-(\nu + n + 1) / 2}}{2^{n \nu / 2} \Gamma_{n}(\nu / 2)} \exp\Big(-\frac{1}{2} \tr(S X^{-1})\Big)\,.
+f(X; S, \nu) = \frac{\det(S)^{\nu/2} \det(X)^{-(\nu + n + 1)/2}}{2^{n \nu/2} \Gamma_{n}(\nu/2)} \exp\Big(-\frac{1}{2} \tr(S X^{-1})\Big)
+\end{equation}
+with logarithm
+\begin{equation}
+\log(f(X; S, \nu)) = -\frac{1}{2} (-\nu \log(\det(S)) + (\nu + n + 1) \log(\det(X)) + n \nu \log(2) + 2 \log(\Gamma_{n}(\nu/2)) + \tr(S X^{-1}))\,.
 \end{equation}
 
 \subsection{Computation}
@@ -148,18 +178,20 @@ $\tr(S^{-1} X)$ is computed by noting that
 \end{equation}
 where $\odot$ denotes elementwise multiplication.
 Then
+\small
 \begin{equation}
 \begin{aligned}
 \tr(S^{-1} X)
   &= \sum_{i,j} (S^{-1} \odot \transpose{X})_{i,j} \\
   &= \sum_{i,j} (S^{-1} \odot X)_{i,j} \\
   &= \sum_{i,j} (D_{\sigma,S}^{-1} D_{\theta,S}^{1/2} \transpose{(L_{S}^{-1})} L_{S}^{-1} D_{\theta,S}^{1/2} D_{\sigma,S}^{-1} \odot D_{\sigma,X} D_{\theta,X}^{-1/2} L_{X} \transpose{L_{X}} D_{\theta,X}^{-1/2} D_{\sigma,X})_{i,j} \\
-  &= \sum_{i,j} (D_{1} A_{1} \transpose{D_{1}})_{i,j}\,,
+  &= \sum_{i,j} (D_{1} V_{1} \transpose{D_{1}})_{i,j}\,,
 \end{aligned}
 \end{equation}
+\normalsize
 where
 \begin{equation}
-A_{1} = \transpose{(L_{S}^{-1})} L_{S}^{-1} \odot L_{X} \transpose{L_{X}}\,,\qquad D_{1} = D_{\sigma,S}^{-1} D_{\theta,S}^{1/2} D_{\sigma,X} D_{\theta,X}^{-1/2}\,.
+V_{1} = \transpose{(L_{S}^{-1})} L_{S}^{-1} \odot L_{X} \transpose{L_{X}}\,,\qquad D_{1} = D_{\sigma,S}^{-1} D_{\theta,S}^{1/2} D_{\sigma,X} D_{\theta,X}^{-1/2}\,.
 \end{equation}
 
 Similarly,
@@ -169,12 +201,12 @@ Similarly,
   &= \sum_{i,j} (\transpose{S} \odot X^{-1})_{i,j} \\
   &= \sum_{i,j} (S \odot X^{-1})_{i,j} \\
   &= \sum_{i,j} (D_{\sigma,S} D_{\theta,S}^{-1/2} L_{S} \transpose{L_{S}} D_{\theta,S}^{-1/2} D_{\sigma,S} \odot D_{\sigma,X}^{-1} D_{\theta,X}^{1/2} \transpose{(L_{X}^{-1})} L_{X}^{-1} D_{\theta,X}^{1/2} D_{\sigma,X}^{-1})_{i,j} \\
-  &= \sum_{i,j} (D_{2} A_{2} \transpose{D_{2}})_{i,j}\,,
+  &= \sum_{i,j} (D_{2} V_{2} \transpose{D_{2}})_{i,j}\,,
 \end{aligned}
 \end{equation}
 where
 \begin{equation}
-A_{2} = L_{S} \transpose{L_{S}} \odot \transpose{(L_{X}^{-1})} L_{X}^{-1}\,,\qquad D_{2} = D_{\sigma,S} D_{\theta,S}^{-1/2} D_{\sigma,X}^{-1} D_{\theta,X}^{1/2}\,.
+V_{2} = L_{S} \transpose{L_{S}} \odot \transpose{(L_{X}^{-1})} L_{X}^{-1}\,,\qquad D_{2} = D_{\sigma,S} D_{\theta,S}^{-1/2} D_{\sigma,X}^{-1} D_{\theta,X}^{1/2}\,.
 \end{equation}
 
 \end{document}
