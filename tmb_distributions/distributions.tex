@@ -6,6 +6,7 @@
 \usepackage[colorlinks=true,allcolors=magenta]{hyperref}
 
 \DeclareMathOperator{\tr}{tr}
+\DeclareMathOperator{\abs}{abs}
 \DeclareMathOperator{\diag}{diag}
 \newcommand{\transpose}[1]{#1^{\mathrm{T}}}
 
@@ -24,18 +25,47 @@ Adopting the notation
 $x_{ij} = s_{ij}$,
 $y_{ij} = \log(s_{ii}) / 2$ for $i = j$, and
 $y_{ij} = l_{ij}$ for $i > j$,
-we can write the absolute value of the Jacobian of $g = f^{-1}$ as
+we can write the absolute value of the Jacobian determinant of
+$g = f^{-1}$ as
 \begin{equation}
+\label{eq:absdetjac}
 \begin{aligned}
-  &\big|\det(\partial g/\partial y)\big| \\
-&= \Big( \prod_{i=1}^{n} 2 \exp(2 y_{ii}) \Big) \Big( \prod_{i=1}^{n} \Big( 1 + \sum_{j=1}^{i-1} y_{ij}^{2} \Big)^{-(i+2)/2} \Big) \Big( \prod_{i=1}^{n} \exp(2 y_{ii})^{(n-1)/2} \Big( 1 + \sum_{j=1}^{i-1} y_{ij}^{2} \Big)^{-(n-i)/2} \Big) \\
+&\abs(\det(\partial g/\partial y)) \\
+&= \Big( \prod_{i=1}^{n} \exp(2 y_{ii})^{(n-1)/2} \Big( 1 + \sum_{j=1}^{i-1} y_{ij}^{2} \Big)^{-(n-i)/2} \Big) \Big( \prod_{i=1}^{n} \Big( 1 + \sum_{j=1}^{i-1} y_{ij}^{2} \Big)^{-(i+2)/2} \Big) \Big( \prod_{i=1}^{n} 2 \exp(2 y_{ii}) \Big) \\
 &= 2^{n} \exp\Big((n + 1) \sum_{i=1}^{n} y_{ii}\Big) \prod_{i=1}^{n} \Big( 1 + \sum_{j=1}^{i-1} y_{ij}^{2} \Big)^{-(n+2)/2}
 \end{aligned}
 \end{equation}
 and the logarithm as
 \begin{equation}
-\log\big|\det(\partial g/\partial y)\big| = n \log(2) + \frac{1}{2} (n + 1) \sum_{i=1}^{n} 2 y_{ii} - \frac{1}{2} (n + 2) \sum_{i=1}^{n} \log\Big( 1 + \sum_{j=1}^{n} y_{ij}^{2}\Big)\,.
+\log(\abs(\det(\partial g/\partial y))) = n \log(2) + \frac{1}{2} (n + 1) \sum_{i=1}^{n} 2 y_{ii} - \frac{1}{2} (n + 2) \sum_{i=1}^{n} \log\Big( 1 + \sum_{j=1}^{n} y_{ij}^{2}\Big)\,.
 \end{equation}
+Note that $g$ can be written as $g_{3} \circ g_{2} \circ g_{1}$:
+\begin{itemize}
+\item
+$g_{1}$ maps $y_{1} = y$ to $y_{2}$ containing
+$\{l_{ij}\}_{i \geq j}$ sorted in row major order with $s_{ii}$
+replacing $l_{ii}$;
+\item
+$g_{2}$ maps $y_{2}$     to $y_{3}$ containing
+$\{w_{ij}\}_{i \geq j}$ sorted in row major order with $s_{ii}$
+replacing $w_{ii}$, where $W = \diag(\diag(L L'))^{-1/2} L$; and
+\item
+$g_{3}$ maps $y_{3}$     to $y_{4} = x$.
+\end{itemize}
+By the chain rule, the Jacobian matrix of $g$ can be written as
+\begin{equation}
+\label{eq:chainrule}
+\frac{\partial g}{\partial y}(y) =
+\frac{\partial g_{3}}{\partial y_{3}}(g_{2}(g_{1}(y)))
+\frac{\partial g_{2}}{\partial y_{2}}(      g_{1}(y) )
+\frac{\partial g_{1}}{\partial y_{1}}(            y  )\,.
+\end{equation}
+The first equality in Equation~\ref{eq:absdetjac} is the result of
+taking $\abs \circ \det$ on each side of Equation~\ref{eq:chainrule}.
+
+Note that the ordering of each $y_{k}$ is chosen so that each
+$\partial g_{k}/\partial y_{k}$ has a ``nice'' (typically block
+diagonal) structure amenable to the computation of determinants.
 
 \newpage
 
@@ -47,7 +77,7 @@ with unit diagonal elements (i.e., an $n \times n$ correlation matrix).
 \subsection{Lewandowski-Kurowicka-Joe (LKJ) distribution}
 
 If $X$ follows an
-\href{https://mc-stan.org/docs/functions-reference/lkj-correlation.html}{LKJ distribution}
+\href{https://en.wikipedia.org/wiki/Lewandowski-Kurowicka-Joe_distribution}{LKJ distribution}
 with shape $\eta > 0$,
 \begin{equation}
 X \sim \mathrm{LKJ}(\eta)\,,
@@ -101,18 +131,18 @@ Let $X$ and $S$ be $n \times n$ real symmetric positive definite matrices
 \subsection{Wishart distribution}
 
 If $X$ follows a
-\href{https://mc-stan.org/docs/functions-reference/wishart-distribution.html}{Wishart distribution}
-with scale $S$ and degrees of freedom $\nu$,
+\href{https://en.wikipedia.org/wiki/Wishart_distribution}{Wishart distribution}
+with shape (degrees of freedom) $\nu$ and scale $S$,
 \begin{equation}
-X \sim \mathrm{Wishart}(S, \nu)\,,
+X \sim \mathrm{Wishart}(\nu, S)\,,
 \end{equation}
 then its probability density function is
 \begin{equation}
-f(X; S, \nu) = \frac{\det(S)^{-\nu/2} \det(X)^{-(-\nu + n + 1)/2}}{2^{n \nu/2} \Gamma_{n}(\nu/2)} \exp\Big(-\frac{1}{2} \tr(S^{-1} X)\Big)
+f(X; \nu, S) = \frac{\det(S)^{-\nu/2} \det(X)^{-(-\nu + n + 1)/2}}{2^{n \nu/2} \Gamma_{n}(\nu/2)} \exp\Big(-\frac{1}{2} \tr(S^{-1} X)\Big)
 \end{equation}
 with logarithm
 \begin{equation}
-\log(f(X; S, \nu)) = -\frac{1}{2} (\nu \log(\det(S)) + (-\nu + n + 1) \log(\det(X)) + n \nu \log(2) + 2 \log(\Gamma_{n}(\nu/2)) + \tr(S^{-1} X))\,,
+\log(f(X; \nu, S)) = -\frac{1}{2} (\nu \log(\det(S)) + (-\nu + n + 1) \log(\det(X)) + n \nu \log(2) + 2 \log(\Gamma_{n}(\nu/2)) + \tr(S^{-1} X))\,,
 \end{equation}
 where $\Gamma_{n}$ denotes the
 \href{https://en.wikipedia.org/wiki/Multivariate_gamma_function}{$n$-variate gamma function},
@@ -124,18 +154,18 @@ given by
 \subsection{Inverse Wishart distribution}
 
 If $X$ follows an
-\href{https://mc-stan.org/docs/functions-reference/inverse-wishart-distribution.html}{inverse Wishart distribution}
-with scale $S$ and degrees of freedom $\nu$,
+\href{https://en.wikipedia.org/wiki/Inverse-Wishart_distribution}{inverse Wishart distribution}
+with shape (degrees of freedom) $\nu$ and scale $S$,
 \begin{equation}
-X \sim \mathrm{InverseWishart}(S, \nu)\,,
+X \sim \mathrm{InverseWishart}(\nu, S)\,,
 \end{equation}
 then its probability density function is
 \begin{equation}
-f(X; S, \nu) = \frac{\det(S)^{\nu/2} \det(X)^{-(\nu + n + 1)/2}}{2^{n \nu/2} \Gamma_{n}(\nu/2)} \exp\Big(-\frac{1}{2} \tr(S X^{-1})\Big)
+f(X; \nu, S) = \frac{\det(S)^{\nu/2} \det(X)^{-(\nu + n + 1)/2}}{2^{n \nu/2} \Gamma_{n}(\nu/2)} \exp\Big(-\frac{1}{2} \tr(S X^{-1})\Big)
 \end{equation}
 with logarithm
 \begin{equation}
-\log(f(X; S, \nu)) = -\frac{1}{2} (-\nu \log(\det(S)) + (\nu + n + 1) \log(\det(X)) + n \nu \log(2) + 2 \log(\Gamma_{n}(\nu/2)) + \tr(S X^{-1}))\,.
+\log(f(X; \nu, S)) = -\frac{1}{2} (-\nu \log(\det(S)) + (\nu + n + 1) \log(\det(X)) + n \nu \log(2) + 2 \log(\Gamma_{n}(\nu/2)) + \tr(S X^{-1}))\,.
 \end{equation}
 
 \subsection{Computation}
