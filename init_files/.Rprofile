@@ -10,7 +10,7 @@ options(browserNLdisabled = TRUE,
         repos =
             local({
                 r <- getOption("repos")
-                r["CRAN"] <- "https://cloud.r-project.org/"
+                r["CRAN"] <- "https://cloud.r-project.org"
                 r["BioCsoft"] <- "%bm/packages/%v/bioc"
                 r["BioCann"] <- "%bm/packages/%v/data/annotation"
                 r["BioCexp"] <- "%bm/packages/%v/data/experiment"
