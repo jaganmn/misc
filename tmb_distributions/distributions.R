@@ -8,7 +8,8 @@ dyn.load(lib)
 
 ## ==== Utilities ======================================================
 
-## Run the indicated test with the supplied data and return the result
+## Run the indicated test with the supplied data and return the result;
+## the length of the result is always 1
 report <-
 local({
 	tt <- paste(readLines(cpp), collapse = "\n")
@@ -49,18 +50,25 @@ function(x) {
 
 ## ==== Tests ==========================================================
 
-mvlgamma <-
-function(x, n)
+Cmvlgamma <-
+function(x, n = 1L)
+	report("mvlgamma", x = x, n = n)
+Rmvlgamma <-
+function(x, n = 1L)
 	0.25 * n * (n - 1) * log(pi) + rowSums(lgamma(outer(x, seq.int(from = 0, by = 0.5, length.out = n), `-`)))
 
-x <- 1:12
-res1 <- report("mvlgamma", x = x, n = 1L)
-res2 <- report("mvlgamma", x = x, n = 4L)
-stopifnot(all.equal(res1, mvlgamma(x, 1L)),
-          all.equal(res2, mvlgamma(x, 4L)))
+set.seed(0xafafaf)
+for (n in 0:4)
+for (x in (n - 1)/2 + runif(10L, 1, 100))
+stopifnot(all.equal(Cmvlgamma(x, n), Rmvlgamma(x, n)))
 
-dlkj <-
-function(x, shape, give.log = FALSE) {
+
+Cdlkj <-
+function(x, shape, give.log = 0L)
+	report("dlkj", x = x, shape = shape,
+	       give_log = give.log)
+Rdlkj <-
+function(x, shape, give.log = 0L) {
 	n <- as.integer(0.5 * (1 + sqrt(1 + 8 * length(x))))
 	r <- sumLogDiagRTR(x)
 	eta <- exp(shape)
@@ -71,28 +79,38 @@ function(x, shape, give.log = FALSE) {
 	if (give.log) log.res else exp(log.res)
 }
 
+set.seed(0xfafafa)
 n <- 4L
-x <- rnorm(0.5 * n * (n - 1L))
-shape <- log(2)
-res3 <- report("dlkj", x = x, shape = shape, give_log = 1L)
-stopifnot(all.equal(res3, dlkj(x, shape, TRUE)))
-f1 <- function(x) report("dlkj", x = x, shape = log(8), give_log = 0L)
-if (FALSE) # FIXME
-stopifnot(all.equal(integrate(Vectorize(f1), -Inf, Inf)[["value"]], 1))
+p <- (n * (n - 1L)) %/% 2L
+x <- rnorm(p)
+shape <- 1
+stopifnot(all.equal(Cdlkj(x, shape, 1L), Rdlkj(x, shape, 1L)))
 
-dwishart <-
-function(x, shape, scale, give.log = FALSE) {
+f1 <- function(x) vapply(x, Cdlkj, 0, shape = 1, give.log = 0L)
+if (FALSE) # FIXME
+stopifnot(all.equal(integrate(f1, -Inf, Inf)[["value"]], 1))
+
+
+Cdwishart <-
+function(x, shape, scale, give.log = 0L)
+	report("dwishart", x = x, shape = shape, scale = scale,
+	       give_log = give.log)
+Rdwishart <-
+function(x, shape, scale, give.log = 0L) {
 	n <- as.integer(0.5 * (-1 + sqrt(1 + 8 * length(x))))
 	r <- sumLogDiagRTR(x[-seq_len(n)])
 	nu <- exp(shape) + n - 1
 	X <- makeSigma(x)
 	S <- makeSigma(scale)
 	log.abs.det.jac <- n * log(2) + 0.5 * (n + 1) * sum(log(diag(X))) - 0.5 * (n + 2) * r
-	log.res <- log.abs.det.jac - 0.5 * (nu * log(det(S)) + (-nu + n + 1) * log(det(X)) + n * nu * log(2) + 2 * mvlgamma(0.5 * nu, n) + sum(diag(solve(S, X))))
+	log.res <- log.abs.det.jac - 0.5 * (nu * log(det(S)) + (-nu + n + 1) * log(det(X)) + n * nu * log(2) + 2 * Rmvlgamma(0.5 * nu, n) + sum(diag(solve(S, X))))
 	if (give.log) log.res else exp(log.res)
 }
-
-dinvwishart <-
+Cdinvwishart <-
+function(x, shape, scale, give.log = 0L)
+	report("dinvwishart", x = x, shape = shape, scale = scale,
+	       give_log = give.log)
+Rdinvwishart <-
 function(x, shape, scale, give.log = FALSE) {
 	n <- 0.5 * (-1 + sqrt(1 + 8 * length(x)))
 	r <- sumLogDiagRTR(x[-seq_len(n)])
@@ -100,19 +118,22 @@ function(x, shape, scale, give.log = FALSE) {
 	X <- makeSigma(x)
 	S <- makeSigma(scale)
 	log.abs.det.jac <- n * log(2) + 0.5 * (n + 1) * sum(log(diag(X))) - 0.5 * (n + 2) * r
-	log.res <- log.abs.det.jac - 0.5 * (-nu * log(det(S)) + (nu + n + 1) * log(det(X)) + n * nu * log(2) + 2 * mvlgamma(0.5 * nu, n) + sum(diag(solve(X, S))))
+	log.res <- log.abs.det.jac - 0.5 * (-nu * log(det(S)) + (nu + n + 1) * log(det(X)) + n * nu * log(2) + 2 * Rmvlgamma(0.5 * nu, n) + sum(diag(solve(X, S))))
 	if (give.log) log.res else exp(log.res)
 }
 
 n <- 4L
-x <- rnorm(0.5 * n * (n + 1L))
-shape <- log(5)
-scale <- rnorm(length(x))
-res4 <- report("dwishart"   , x = x, shape = shape, scale = scale, give_log = 1L)
-res5 <- report("dinvwishart", x = x, shape = shape, scale = scale, give_log = 1L)
-stopifnot(all.equal(res4, dwishart   (x, shape, scale, TRUE)),
-          all.equal(res5, dinvwishart(x, shape, scale, TRUE)))
-for (nm in c("dwishart", "dinvwishart")) {
-f1 <- function(x) report(nm, x = x, shape = log(5), scale = 1, give_log = 0L)
-stopifnot(all.equal(integrate(Vectorize(f1), -Inf, Inf)[["value"]], 1))
+p <- (n * (n + 1L)) %/% 2L
+x <- rnorm(p)
+shape <- 1
+scale <- rnorm(p)
+
+stopifnot(all.equal(Cdwishart   (x, shape, scale, TRUE),
+                    Rdwishart   (x, shape, scale, TRUE)),
+          all.equal(Cdinvwishart(x, shape, scale, TRUE),
+                    Rdinvwishart(x, shape, scale, TRUE)))
+
+for (Cd in list(Cdwishart, Cdinvwishart)) {
+f1 <- function(x) vapply(x, Cd, 0, shape = 1, scale = 1, give.log = 0L)
+stopifnot(all.equal(integrate(f1, -Inf, Inf)[["value"]], 1))
 }

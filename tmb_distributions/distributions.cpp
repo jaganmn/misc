@@ -11,21 +11,15 @@ enum test
 template<class Type>
 Type objective_function<Type>::operator()()
 {
+	Type res = Type(0.0);
 	DATA_INTEGER(flag);
-
 	switch (flag)
 	{
 	case mvlgamma:
 	{
-		DATA_VECTOR(x);
+		DATA_SCALAR(x);
 		DATA_INTEGER(n);
-		Eigen::Index len = x.size();
-		vector<Type> res(len);
-		for (Eigen::Index i = 0; i < len; ++i)
-		{
-			res(i) = distributions::mvlgamma(x(i), n);
-		}
-		REPORT(res);
+		res = distributions::mvlgamma(x, n);
 		break;
 	}
 	case dlkj:
@@ -33,8 +27,7 @@ Type objective_function<Type>::operator()()
 		DATA_VECTOR(x);
 		DATA_SCALAR(shape);
 		DATA_INTEGER(give_log);
-		Type res = distributions::dlkj(x, shape, give_log);
-		REPORT(res);
+		res = distributions::dlkj(x, shape, give_log);
 		break;
 	}
 	case dwishart:
@@ -43,8 +36,7 @@ Type objective_function<Type>::operator()()
 		DATA_SCALAR(shape);
 		DATA_VECTOR(scale);
 		DATA_INTEGER(give_log);
-		Type res = distributions::dwishart(x, shape, scale, give_log);
-		REPORT(res);
+		res = distributions::dwishart(x, shape, scale, give_log);
 		break;
 	}
 	case dinvwishart:
@@ -53,11 +45,10 @@ Type objective_function<Type>::operator()()
 		DATA_SCALAR(shape);
 		DATA_VECTOR(scale);
 		DATA_INTEGER(give_log);
-		Type res = distributions::dinvwishart(x, shape, scale, give_log);
-		REPORT(res);
+		res = distributions::dinvwishart(x, shape, scale, give_log);
 		break;
 	}
 	}
-
+	REPORT(res);
 	return Type(0.0);
 }
