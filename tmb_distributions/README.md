@@ -4,30 +4,30 @@
 four functions:
 
 ```cpp
-Type mvlgamma(Type x, int p = 1)
-Type dlkj(const vector<Type> &x, Type eta, int give_log = 0)
-Type dwishart(const vector<Type> &x, Type df, const vector<Type> &scale, int give_log = 0)
-Type dinvwishart(const vector<Type> &x, Type df, const vector<Type> &scale, int give_log = 0)
+Type mvlgamma(Type x, unsigned int n = 1)
+Type dlkj(const vector<Type> &x, Type shape, int give_log = 0)
+Type dwishart(const vector<Type> &x, Type shape, const vector<Type> &scale, int give_log = 0)
+Type dinvwishart(const vector<Type> &x, Type shape, const vector<Type> &scale, int give_log = 0)
 ```
 
 `mvlgamma` evaluates the log
-[`p`-variate gamma function](https://en.wikipedia.org/wiki/Multivariate_gamma_function)
-at `x`, subject to the constraint `x > (p-1)/2`.
+[`n`-variate gamma function](https://en.wikipedia.org/wiki/Multivariate_gamma_function)
+at `x`, subject to the constraint `x > (n-1)/2`.
 
 `dlkj` computes the
-[Lewandowski-Kurowicka-Joe](https://mc-stan.org/docs/functions-reference/lkj-correlation.html)
-density of a unit diagonal, symmetric positive definite matrix
+[Lewandowski-Kurowicka-Joe](https://en.wikipedia.org/wiki/Lewandowski-Kurowicka-Joe_distribution) (LKJ)
+density of a symmetric positive definite matrix with unit diagonal
 (i.e., a correlation matrix) `X`.
 Vector `x` specifies matrix `X` indirectly as described
 [here](https://kaskr.github.io/adcomp/classdensity_1_1UNSTRUCTURED__CORR__t.html).
 Hence if `X` is an `n`-by-`n` matrix, then `x` must have length `n*(n-1)/2`.
-`eta` is a positive shape parameter controlling the concentration
-of the density around the identity matrix.
+`shape = log(eta)` is a shape parameter controlling the concentration of the
+density around the identity matrix.
 
 `dwishart` and `dinvwishart` compute the
-[Wishart](https://mc-stan.org/docs/functions-reference/wishart-distribution.html)
+[Wishart](https://en.wikipedia.org/wiki/Wishart_distribution)
 and
-[inverse Wishart](https://mc-stan.org/docs/functions-reference/inverse-wishart-distribution.html)
+[inverse Wishart](https://en.wikipedia.org/wiki/Inverse-Wishart_distribution)
 densities of a symmetric positive definite matrix
 (i.e., a covariance matrix) `X`.
 Vector `x` specifies matrix `X` indirectly:
@@ -35,9 +35,10 @@ if `X` is an `n`-by-`n` matrix, then `x` must have length `n*(n+1)/2`,
 `head(x, n)` must contain the log standard deviations `log(sqrt(diag(X)))`,
 and `tail(x, n*(n-1)/2)` must specify `cov2cor(X)`
 (see again [here](https://kaskr.github.io/adcomp/classdensity_1_1UNSTRUCTURED__CORR__t.html)).
-`df` is the degrees of freedom, subject to the constraint `df > n - 1`.
-`scale` specifies the `n`-by-`n` scale matrix `S` in the same way that
-`x` specifies `X`.
+`shape = log(nu - n - 1)` is a shape parameter specifying the degrees of
+freedom `nu`, subject to the constraint `nu > n - 1`.
+`scale` specifies the `n`-by-`n` symmetric positive definite scale matrix
+`S` in the same way that `x` specifies `X`.
 
 Computational details can be found in [`distributions.tex`](distributions.tex).
 
