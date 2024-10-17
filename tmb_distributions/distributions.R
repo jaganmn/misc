@@ -76,6 +76,9 @@ x <- rnorm(0.5 * n * (n - 1L))
 shape <- log(2)
 res3 <- report("dlkj", x = x, shape = shape, give_log = 1L)
 stopifnot(all.equal(res3, dlkj(x, shape, TRUE)))
+f1 <- function(x) report("dlkj", x = x, shape = log(8), give_log = 0L)
+if (FALSE) # FIXME
+stopifnot(all.equal(integrate(Vectorize(f1), -Inf, Inf)[["value"]], 1))
 
 dwishart <-
 function(x, shape, scale, give.log = FALSE) {
@@ -109,3 +112,7 @@ res4 <- report("dwishart"   , x = x, shape = shape, scale = scale, give_log = 1L
 res5 <- report("dinvwishart", x = x, shape = shape, scale = scale, give_log = 1L)
 stopifnot(all.equal(res4, dwishart   (x, shape, scale, TRUE)),
           all.equal(res5, dinvwishart(x, shape, scale, TRUE)))
+for (nm in c("dwishart", "dinvwishart")) {
+f1 <- function(x) report(nm, x = x, shape = log(5), scale = 1, give_log = 0L)
+stopifnot(all.equal(integrate(Vectorize(f1), -Inf, Inf)[["value"]], 1))
+}
