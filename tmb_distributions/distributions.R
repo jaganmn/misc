@@ -50,6 +50,9 @@ function(x) {
 
 ## ==== Tests ==========================================================
 
+## FIXME: so far mainly testing that C++ and R implementations give equal
+##        results, _not_ that the results are mathematically correct
+
 Cmvlgamma <-
 function(x, n = 1L)
 	report("mvlgamma", x = x, n = n)
@@ -86,9 +89,11 @@ x <- rnorm(p)
 shape <- 1
 stopifnot(all.equal(Cdlkj(x, shape, 1L), Rdlkj(x, shape, 1L)))
 
-f1 <- function(x) vapply(x, Cdlkj, 0, shape = 1, give.log = 0L)
+## Integrate over space of 2-by-2 correlation matrices
+## parametrized bijectively by y = L[2, 1] = R[1, 2]
+integrand <- function(y) vapply(y, Cdlkj, 0, shape = 1, give.log = 0L)
 if (FALSE) # FIXME
-stopifnot(all.equal(integrate(f1, -Inf, Inf)[["value"]], 1))
+stopifnot(all.equal(integrate(integrand, -Inf, Inf)[["value"]], 1))
 
 
 Cdwishart <-
@@ -133,7 +138,9 @@ stopifnot(all.equal(Cdwishart   (x, shape, scale, TRUE),
           all.equal(Cdinvwishart(x, shape, scale, TRUE),
                     Rdinvwishart(x, shape, scale, TRUE)))
 
+## Integrate over space of 1-by-1 covariance matrices
+## parametrized bijectively by y = log(sqrt(X[1, 1]))
 for (Cd in list(Cdwishart, Cdinvwishart)) {
-f1 <- function(x) vapply(x, Cd, 0, shape = 1, scale = 1, give.log = 0L)
-stopifnot(all.equal(integrate(f1, -Inf, Inf)[["value"]], 1))
+integrand <- function(y) vapply(y, Cd, 0, shape = 1, scale = 1, give.log = 0L)
+stopifnot(all.equal(integrate(integrand, -Inf, Inf)[["value"]], 1))
 }
