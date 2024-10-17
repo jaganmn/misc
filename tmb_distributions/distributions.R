@@ -36,6 +36,13 @@ makeSigma <- function(x) {
 	r * RTR * rep(r, each = n)
 }
 
+## Compute sum(log(diag(crossprod(R)))) from x = theta
+sumLogDiagRTR <- function(x) {
+	n <- as.integer(0.5 * (1 + sqrt(1 + 8 * length(x))))
+	R <- diag(n)
+	R[upper.tri(R)] <- x
+	sum(log(colSums(R * R)))
+}
 
 ## ==== Tests ==========================================================
 
@@ -50,15 +57,15 @@ stopifnot(all.equal(res2, mvlgamma(x, 4L)))
 
 dlkj <- function(x, shape, give.log = FALSE) {
 	n <- as.integer(0.5 * (1 + sqrt(1 + 8 * length(x))))
+	r <- sumLogDiagRTR(x)
 	eta <- exp(shape)
-	R <- diag(n)
-	R[upper.tri(R)] <- x
-	sum.log.diag.RTR <- sum(log(colSums(R * R)))
 	j <- seq_len(max(0L, n - 1L))
 	a <- eta - 1 + 0.5 * (j + 1)
-	log.res <- n * (n - 1) * (eta - 1 + (2 * n - 1)/6) * log(2) + (eta - 1) * -sum.log.diag.RTR + sum(2 * j * lgamma(a) - j * lgamma(2 * a)) - 0.5 * (n + 2) * sum.log.diag.RTR
+	log.abs.det.jac <- -0.5 * (n + 2) * r
+	log.res <- log.abs.det.jac + n * (n - 1) * (eta - 1 + (2 * n - 1)/6) * log(2) + (eta - 1) * -r + sum(2 * j * lgamma(a) - j * lgamma(2 * a))
 	if (give.log) log.res else exp(log.res)
 }
+
 n <- 4L
 x <- rnorm(0.5 * n * (n - 1L))
 shape <- log(2)
@@ -67,14 +74,15 @@ stopifnot(all.equal(res3, dlkj(x, shape, TRUE)))
 
 dwishart <- function(x, shape, scale, give.log = FALSE) {
 	n <- as.integer(0.5 * (-1 + sqrt(1 + 8 * length(x))))
+	r <- sumLogDiagRTR(x[-seq_len(n)])
 	nu <- exp(shape) + n - 1
-	R <- diag(n)
-	R[upper.tri(R)] <- x[-seq_len(n)]
 	X <- makeSigma(x)
 	S <- makeSigma(scale)
-	log.res <- -0.5 * (nu * log(det(S)) + (-nu + n + 1) * log(det(X)) + n * nu * log(2) + 2 * mvlgamma(0.5 * nu, n) + sum(diag(solve(S, X)))) + n * log(2) + 0.5 * (n + 1) * sum(log(diag(X))) - 0.5 * (n + 2) * sum(log(colSums(R * R)))
+	log.abs.det.jac <- n * log(2) + 0.5 * (n + 1) * sum(log(diag(X))) - 0.5 * (n + 2) * r
+	log.res <- log.abs.det.jac - 0.5 * (nu * log(det(S)) + (-nu + n + 1) * log(det(X)) + n * nu * log(2) + 2 * mvlgamma(0.5 * nu, n) + sum(diag(solve(S, X))))
 	if (give.log) log.res else exp(log.res)
 }
+
 n <- 4L
 x <- rnorm(0.5 * n * (n + 1L))
 shape <- log(5)
@@ -84,14 +92,15 @@ stopifnot(all.equal(res4, dwishart(x, shape, scale, TRUE)))
 
 dinvwishart <- function(x, df, scale, give.log = FALSE) {
 	n <- 0.5 * (-1 + sqrt(1 + 8 * length(x)))
+	r <- sumLogDiagRTR(x[-seq_len(n)])
 	nu <- exp(shape) + n - 1
-	R <- diag(n)
-	R[upper.tri(R)] <- x[-seq_len(n)]
 	X <- makeSigma(x)
 	S <- makeSigma(scale)
-	log.res <- -0.5 * (-nu * log(det(S)) + (nu + n + 1) * log(det(X)) + n * nu * log(2) + 2 * mvlgamma(0.5 * nu, n) + sum(diag(solve(X, S)))) + n * log(2) + 0.5 * (n + 1) * sum(log(diag(X))) - 0.5 * (n + 2) * sum(log(colSums(R * R)))
+	log.abs.det.jac <- n * log(2) + 0.5 * (n + 1) * sum(log(diag(X))) - 0.5 * (n + 2) * r
+	log.res <- log.abs.det.jac - 0.5 * (-nu * log(det(S)) + (nu + n + 1) * log(det(X)) + n * nu * log(2) + 2 * mvlgamma(0.5 * nu, n) + sum(diag(solve(X, S))))
 	if (give.log) log.res else exp(log.res)
 }
+
 n <- 4L
 x <- rnorm(0.5 * n * (n + 1L))
 shape <- log(5)
