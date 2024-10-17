@@ -27,7 +27,8 @@ local({
 })
 
 ## Construct a covariance matrix Sigma from x = c(log_sd, theta)
-makeSigma <- function(x) {
+makeSigma <-
+function(x) {
 	n <- as.integer(0.5 * (-1 + sqrt(1 + 8 * length(x))))
 	R <- diag(n)
 	R[upper.tri(R)] <- x[-seq_len(n)]
@@ -37,25 +38,29 @@ makeSigma <- function(x) {
 }
 
 ## Compute sum(log(diag(crossprod(R)))) from x = theta
-sumLogDiagRTR <- function(x) {
+sumLogDiagRTR <-
+function(x) {
 	n <- as.integer(0.5 * (1 + sqrt(1 + 8 * length(x))))
 	R <- diag(n)
 	R[upper.tri(R)] <- x
 	sum(log(colSums(R * R)))
 }
 
+
 ## ==== Tests ==========================================================
 
-mvlgamma <- function(x, n)
+mvlgamma <-
+function(x, n)
 	0.25 * n * (n - 1) * log(pi) + rowSums(lgamma(outer(x, seq.int(from = 0, by = 0.5, length.out = n), `-`)))
 
 x <- 1:12
 res1 <- report("mvlgamma", x = x, n = 1L)
-stopifnot(all.equal(res1, mvlgamma(x, 1L)))
 res2 <- report("mvlgamma", x = x, n = 4L)
-stopifnot(all.equal(res2, mvlgamma(x, 4L)))
+stopifnot(all.equal(res1, mvlgamma(x, 1L)),
+          all.equal(res2, mvlgamma(x, 4L)))
 
-dlkj <- function(x, shape, give.log = FALSE) {
+dlkj <-
+function(x, shape, give.log = FALSE) {
 	n <- as.integer(0.5 * (1 + sqrt(1 + 8 * length(x))))
 	r <- sumLogDiagRTR(x)
 	eta <- exp(shape)
@@ -72,7 +77,8 @@ shape <- log(2)
 res3 <- report("dlkj", x = x, shape = shape, give_log = 1L)
 stopifnot(all.equal(res3, dlkj(x, shape, TRUE)))
 
-dwishart <- function(x, shape, scale, give.log = FALSE) {
+dwishart <-
+function(x, shape, scale, give.log = FALSE) {
 	n <- as.integer(0.5 * (-1 + sqrt(1 + 8 * length(x))))
 	r <- sumLogDiagRTR(x[-seq_len(n)])
 	nu <- exp(shape) + n - 1
@@ -83,14 +89,8 @@ dwishart <- function(x, shape, scale, give.log = FALSE) {
 	if (give.log) log.res else exp(log.res)
 }
 
-n <- 4L
-x <- rnorm(0.5 * n * (n + 1L))
-shape <- log(5)
-scale <- rnorm(length(x))
-res4 <- report("dwishart", x = x, shape = shape, scale = scale, give_log = 1L)
-stopifnot(all.equal(res4, dwishart(x, shape, scale, TRUE)))
-
-dinvwishart <- function(x, df, scale, give.log = FALSE) {
+dinvwishart <-
+function(x, shape, scale, give.log = FALSE) {
 	n <- 0.5 * (-1 + sqrt(1 + 8 * length(x)))
 	r <- sumLogDiagRTR(x[-seq_len(n)])
 	nu <- exp(shape) + n - 1
@@ -105,5 +105,7 @@ n <- 4L
 x <- rnorm(0.5 * n * (n + 1L))
 shape <- log(5)
 scale <- rnorm(length(x))
+res4 <- report("dwishart"   , x = x, shape = shape, scale = scale, give_log = 1L)
 res5 <- report("dinvwishart", x = x, shape = shape, scale = scale, give_log = 1L)
-stopifnot(all.equal(res5, dinvwishart(x, shape, scale, TRUE)))
+stopifnot(all.equal(res4, dwishart   (x, shape, scale, TRUE)),
+          all.equal(res5, dinvwishart(x, shape, scale, TRUE)))
