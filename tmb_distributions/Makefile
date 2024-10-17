@@ -1,5 +1,5 @@
-README.html: README.md
-	pandoc --shift-heading-level-by=-1 $< -s -o $@
+.PHONY: all
+all: doc check
 
 %.Rout: %.R %.cpp %.hpp
 	R CMD BATCH --vanilla $<
@@ -7,9 +7,6 @@ README.html: README.md
 %.pdf: %.tex
 	pdflatex $<
 	pdflatex $<
-
-.PHONY: all
-all: doc check
 
 .PHONY: check
 check: distributions.Rout
@@ -24,3 +21,6 @@ clean:
 .PHONY: distclean
 distclean: clean
 	rm -f README.html distributions.Rout distributions.pdf
+
+README.html: README.md
+	pandoc --shift-heading-level-by=-1 $< -s -o $@
