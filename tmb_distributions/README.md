@@ -4,7 +4,7 @@
 four functions:
 
 ```cpp
-Type mvlgamma(Type x, unsigned int n = 1)
+Type mvlgamma(Type x, Eigen::Index n = 1)
 Type dlkj(const vector<Type> &x, Type shape, int give_log = 0)
 Type dwishart(const vector<Type> &x, Type shape, const vector<Type> &scale, int give_log = 0)
 Type dinvwishart(const vector<Type> &x, Type shape, const vector<Type> &scale, int give_log = 0)

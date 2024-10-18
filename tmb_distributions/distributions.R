@@ -61,7 +61,7 @@ function(x, n = 1L)
 	0.25 * n * (n - 1) * log(pi) + rowSums(lgamma(outer(x, seq.int(from = 0, by = 0.5, length.out = n), `-`)))
 
 set.seed(0xafafaf)
-for (n in 0:4)
+for (n in 1:4)
 for (x in (n - 1)/2 + runif(10L, 1, 100))
 stopifnot(all.equal(Cmvlgamma(x, n), Rmvlgamma(x, n)))
 

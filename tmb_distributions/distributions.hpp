@@ -7,10 +7,15 @@ namespace distributions
 #define CHOOSE_MAX ((1ULL << (DBL_MANT_DIG - 3)) - 1)
 
 template<class Type>
-Type mvlgamma(Type x, unsigned int n = 1)
+Type mvlgamma(Type x, Eigen::Index n = 1)
 {
+	if (n <= 0)
+	{
+		Rf_error("%s: '%s' is non-positive",
+		         __func__, "n");
+	}
 	Type res = Type(0.25 * n * (n - 1) * log(M_PI));
-	for (unsigned int j = 0; j < n; ++j)
+	for (Eigen::Index j = 0; j < n; ++j)
 	{
 		res += lgamma(x - Type(0.5 * j));
 	}
@@ -21,23 +26,28 @@ template<class Type>
 Type dlkj(const vector<Type> &x, Type shape, int give_log = 0)
 {
 	Eigen::Index len = x.size();
+	if (len == 0)
+	{
+		Rf_error("%s: length of '%s' is zero",
+		         __func__, "x");
+	}
 	if (len > CHOOSE_MAX)
 	{
 		Rf_error("%s: length of '%s' (%lld) exceeds maximum %llu",
-		         __func__, "x", (long long int) len, CHOOSE_MAX);
+		         __func__, "x", static_cast<long long int>(len), CHOOSE_MAX);
 	}
-	int n = (int) (0.5 * (1.0 + sqrt(1.0 + 8.0 * len)));
+	Eigen::Index n = static_cast<Eigen::Index>(0.5 * (1.0 + sqrt(1.0 + 8.0 * len)));
 	Type eta_minus_one = exp(shape) - Type(1.0);
 
 	matrix<Type> R(n, n);
-	for (int j = 0, k = 0; j < n; ++j)
+	for (Eigen::Index j = 0, k = 0; j < n; ++j)
 	{
-		for (int i = 0; i < j; ++i, ++k)
+		for (Eigen::Index i = 0; i < j; ++i, ++k)
 		{
 			R(i, j) = x(k);
 		}
 		R(j, j) = Type(1.0);
-		for (int i = j + 1; i < n; ++i)
+		for (Eigen::Index i = j + 1; i < n; ++i)
 		{
 			R(i, j) = Type(0.0);
 		}
@@ -49,7 +59,7 @@ Type dlkj(const vector<Type> &x, Type shape, int give_log = 0)
 	/* Terms from conventional density function : */
 	log_res += eta_minus_one * log_det_X +
 		Type(M_LN2 * n * (n - 1)) * (eta_minus_one + Type((n + n - 1) / 6.0));
-	for (int j = 1; j < n; ++j)
+	for (Eigen::Index j = 1; j < n; ++j)
 	{
 		Type a = Type(2.0) * eta_minus_one + Type(j + 1);
 		log_res += Type(2 * j) * lgamma(Type(0.5) * a) - Type(j) * lgamma(a);
@@ -71,14 +81,19 @@ Type dwishart(const vector<Type> &x,
 	if (len != scale.size()) \
 	{ \
 		Rf_error("%s: length of '%s' (%lld) is not equal to length of '%s' (%lld)", \
-		         __func__, "x", (long long int) len, "scale", (long long int) scale.size()); \
+		         __func__, "x", static_cast<long long int>(len), "scale", static_cast<long long int>(scale.size())); \
+	} \
+	if (len == 0) \
+	{ \
+		Rf_error("%s: length of '%s' is zero", \
+		         __func__, "x"); \
 	} \
 	if (len > CHOOSE_MAX) \
 	{ \
 		Rf_error("%s: length of '%s' (%lld) exceeds maximum %llu", \
-		         __func__, "x", (long long int) len, CHOOSE_MAX); \
+		         __func__, "x", static_cast<long long int>(len), CHOOSE_MAX); \
 	} \
-	int n = (int) (0.5 * (-1.0 + sqrt(1.0 + 8.0 * len))); \
+	Eigen::Index n = static_cast<Eigen::Index>(0.5 * (-1.0 + sqrt(1.0 + 8.0 * len))); \
 	Type nu = exp(shape) + Type(n - 1); \
 	 \
 	vector<Type> half_log_diag_X =     x.head(n); \
@@ -89,16 +104,16 @@ Type dwishart(const vector<Type> &x,
 	 \
 	matrix<Type> R_X(n, n); \
 	matrix<Type> R_S(n, n); \
-	for (int j = 0, k = n; j < n; ++j) \
+	for (Eigen::Index j = 0, k = n; j < n; ++j) \
 	{ \
-		for (int i = 0; i < j; ++i, ++k) \
+		for (Eigen::Index i = 0; i < j; ++i, ++k) \
 		{ \
 			R_X(i, j) =     x(k); \
 			R_S(i, j) = scale(k); \
 		} \
 		R_X(j, j) = Type(1.0); \
 		R_S(j, j) = Type(1.0); \
-		for (int i = j + 1; i < n; ++i) \
+		for (Eigen::Index i = j + 1; i < n; ++i) \
 		{ \
 			R_X(i, j) = Type(0.0); \
 			R_S(i, j) = Type(0.0); \
@@ -122,9 +137,10 @@ Type dwishart(const vector<Type> &x,
 	vector<Type> diag_D = (half_log_diag_##X - half_log_diag_##S - \
 		Type(0.5) * (log_diag_RTR_##X - log_diag_RTR_##S)).exp(); \
 	Type sum_DVD = Type(0.0); \
-	for (int j = 0; j < n; ++j) \
+	/* FIXME: Compute robustly without branching on sign of V(i, j)?? */ \
+	for (Eigen::Index j = 0; j < n; ++j) \
 	{ \
-		for (int i = 0; i < j; ++i) \
+		for (Eigen::Index i = 0; i < j; ++i) \
 		{ \
 			sum_DVD += Type(2.0) * V(i, j) * diag_D(i) * diag_D(j); \
 		} \
