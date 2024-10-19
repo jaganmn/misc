@@ -134,17 +134,21 @@ Type dwishart(const vector<Type> &x,
 	matrix<Type> inv_R_##S = atomic::matinv(R_##S); \
 	matrix<Type> V = (R_##X.transpose() * R_##X).array() * \
 		(inv_R_##S * inv_R_##S.transpose()).array(); \
-	vector<Type> diag_D = (half_log_diag_##X - half_log_diag_##S - \
-		Type(0.5) * (log_diag_RTR_##X - log_diag_RTR_##S)).exp(); \
+	vector<Type> log_diag_D = half_log_diag_##X - half_log_diag_##S - \
+		Type(0.5) * (log_diag_RTR_##X - log_diag_RTR_##S); \
 	Type sum_DVD = Type(0.0); \
-	/* FIXME: Compute robustly without branching on sign of V(i, j)?? */ \
+	/* FIXME: Define an atomic function to compute the sum more robustly  */ \
+	/*        as exp(logspace_sub(log_sum_posterms, log_sum_negterms))    */ \
+	/*        where computing each log_sum_*terms requires branching on   */ \
+	/*        the sign of V(i, j).  That the sum is positive follows from */ \
+	/*        the Schur product theorem.                                  */ \
 	for (Eigen::Index j = 0; j < n; ++j) \
 	{ \
 		for (Eigen::Index i = 0; i < j; ++i) \
 		{ \
-			sum_DVD += Type(2.0) * V(i, j) * diag_D(i) * diag_D(j); \
+			sum_DVD += Type(2.0) * V(i, j) * exp(log_diag_D(i) + log_diag_D(j)); \
 		} \
-		sum_DVD += V(j, j) * diag_D(j) * diag_D(j); \
+		sum_DVD += V(j, j) * exp(Type(2.0) * log_diag_D(j)); \
 	} \
 	 \
 	Type log_res = Type(0.0); \
